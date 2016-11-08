@@ -6,21 +6,24 @@ def solution():
 def solve(t):
     n, l1, r1, a, b, c1, c2, m = map(int, input().split(' '))
     # (o, p, q): point, left or right, index of interval
-    bound = [(l1,1,1), (r1,-1,1)]
+    bound = [(l1,1,1), (r1+1,-1,1)]
     for i in range(2,n+1):
         x = (a*l1 + b*r1 + c1) % m
         y = (a*r1 + b*l1 + c2) % m
-        l1 = min(x, y)
-        r1 = max(x, y)
-        bound.append((l1, 1, i))
-        bound.append((r1, -1, i))
-    sort_bound = sorted(bound, key=lambda e:(e[0], -e[1]))
+        # THIS!! use x,y recur, not min/max
+        l1 = x
+        r1 = y
+        bound.append((min(l1, r1), 1, i))
+        bound.append((max(l1, r1)+1, -1, i))
+    #print(bound)
+    sort_bound = sorted(bound, key=lambda e:(e[0], e[1]))
+    #print(sort_bound)
     bus = set()
     total = 0
     single = [0,]*(n+1)
     last_left = 0
     single_left = 0
-    for elem in sort_bound:
+    for i, elem in enumerate(sort_bound):
         old = len(bus)
         if old==1:
             only = list(bus)[0]
@@ -29,19 +32,14 @@ def solve(t):
         else:
             bus.remove(elem[2])
         # count total
-        if old==0 and len(bus)==1:
-            last_left = elem[0]
-        if old==1 and len(bus)==0:
-            total += elem[0] - last_left + 1
+        if old>=1:
+            total += elem[0] - sort_bound[i-1][0]
         # count single
-        if len(bus)==1:
-            single_left = elem[0]
-            if elem[1]==-1:
-                single_left += 1
         if old==1:
-            single[only] += elem[0] - single_left + 1
-            if elem[1]==1:
-                single[only] -= 1
+            single[only] += elem[0] - sort_bound[i-1][0]
     ans = total - max(single)
+ #   for i, e in enumerate(single):
+ #       if e!=0:
+ #           print(i, e)
     print('Case #%d: %d' % (t, ans))
 solution()
