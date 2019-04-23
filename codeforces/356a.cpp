@@ -37,10 +37,39 @@ const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100001;
 
+int n, m;
+int res[300000+5];
 
+// TreeSet
 void solve() {
-    int res = 0;
-    cout << res;
+    cin >> n >> m;
+    set<int> alive;
+    FOR(i, 1, n+1){
+        alive.insert(i);
+    }
+    FOR(i, 1, m+1){
+        int l, r, x;
+        cin >> l >> r >> x;
+        auto it = alive.lb(l);
+        vi los;
+        while (it != alive.end()){
+            int k = *it;
+            if (k > r){
+                break;
+            }
+            if (k != x){
+                los.pb(k);
+                res[k] = x;
+            }
+            it++;
+        }
+        for (auto &k: los){
+            alive.erase(k);
+        }
+    }
+    FOR(i, 1, n+1){
+        cout << res[i] << ' ';
+    }
 }
 
 int main() {

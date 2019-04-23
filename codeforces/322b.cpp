@@ -40,6 +40,17 @@ const int MX = 100001;
 
 void solve() {
     int res = 0;
+    int r, g, b;
+    cin >> r >> g >> b;
+    
+    int k = min(r, g);
+    k = min(k, b);
+    r -= k; g -= k; b -= k;
+    res = k + r/3 + g/3 + b/3;
+    r %= 3; g %= 3; b %= 3;
+    if (k && r+g+b == 4){
+        res += 1;
+    }
     cout << res;
 }
 

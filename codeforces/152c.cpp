@@ -37,9 +37,27 @@ const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100001;
 
+int n, m;
+char ta[111][111];
 
 void solve() {
-    int res = 0;
+    ll res = 1;
+    cin >> n >> m;
+    F0R(i, n){
+        cin >> ta[i];
+    }
+    vi cnt(m);
+    F0R(j, m){
+        unordered_set<char> set;
+        F0R(i, n){
+            set.insert(ta[i][j]);
+        }
+        cnt[j] = sz(set);
+    }
+    F0R(j, m){
+        res *= cnt[j];
+        res %= MOD;
+    }
     cout << res;
 }
 

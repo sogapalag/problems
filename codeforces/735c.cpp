@@ -37,9 +37,25 @@ const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100001;
 
+const int N = 90; //4*10^18
+ll fib[N];
+
+void table(){
+    fib[1] = 2; fib[2] = 3;
+    FOR(i, 3, N){
+        fib[i] = fib[i-1] + fib[i-2];
+        //cout << fib[i] << endl;
+    }
+}
 
 void solve() {
     int res = 0;
+    ll n;
+    cin >> n;
+    table();
+    int i = 1;
+    while (n >= fib[i]) i++;
+    res = i - 1;
     cout << res;
 }
 

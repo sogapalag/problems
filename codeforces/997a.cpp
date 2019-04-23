@@ -37,9 +37,28 @@ const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100001;
 
+int n;
+ll x, y;
+char s[300000+5];
 
 void solve() {
-    int res = 0;
+    ll res = 0;
+    cin >> n >> x >> y;
+    cin >> s;
+    int cnt = 0;
+    char c = s[0];
+    F0R(i, n){
+        if (s[i] != c){
+            cnt += 1;
+            c = s[i];
+        }
+    }
+    ll z = min(x, y);
+    if (s[0] == '0'){
+        res = (cnt/2) * z + y;
+    }else if (cnt){
+        res = ((cnt-1)/2) * z + y;
+    }
     cout << res;
 }
 

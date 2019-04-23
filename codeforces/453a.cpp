@@ -37,10 +37,19 @@ const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100001;
 
+int m, n;
+ld p[100000 + 5];
 
 void solve() {
-    int res = 0;
-    cout << res;
+    ld res = 0;
+    cin >> m >> n;
+    F0R(i, m+1){
+        p[i] = pow(ld(i)/ld(m), n);
+    }
+    FOR(i, 1, m+1){
+        res += ld(i) * (p[i] - p[i-1]);
+    }
+    cout << setprecision(9) << res;
 }
 
 int main() {

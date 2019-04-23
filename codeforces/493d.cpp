@@ -37,10 +37,16 @@ const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100001;
 
-
+// play mirrorly
 void solve() {
-    int res = 0;
-    cout << res;
+    int n;
+    cin >> n;
+    if (n & 1){
+        cout << "black";
+    }else{
+        cout << "white" << endl;
+        cout << "1 2";
+    }
 }
 
 int main() {

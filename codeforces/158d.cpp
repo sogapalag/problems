@@ -37,9 +37,35 @@ const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100001;
 
+int n;
+int t[20000 + 5];
 
 void solve() {
-    int res = 0;
+    int res = INT_MIN;
+    cin >> n;
+    F0R(i, n){
+        cin >> t[i];
+    }
+    vi fac;
+    fac.reserve(n);
+    FOR(i, 3, n+1){
+        if (!(n%i)){
+            fac.pb(i);
+        }
+    }
+    int crt = 0;
+    for (auto &i: fac){
+        int k = n/i;
+        F0R(j, k){
+            crt = 0;
+            int jj = j;
+            while (jj < n){
+                crt += t[jj];
+                jj += k;
+            }
+            res = max(res, crt);
+        }
+    }
     cout << res;
 }
 

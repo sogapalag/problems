@@ -37,9 +37,26 @@ const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100001;
 
+int n;
+int dp[100000+5];
 
 void solve() {
-    int res = 0;
+    int res = INT_MAX;
+    cin >> n;
+    vpi h(n+1);
+    h[0].f = INT_MIN;
+    FOR(i, 1, n+1){
+        cin >> h[i].f >> h[i].s;
+    }
+    sort(all(h));
+    
+    dp[0] = 0;
+    FOR(i, 1, n+1){
+        auto lo = lb(all(h), mp(h[i].f - h[i].s, 0));
+        int k = lo - h.begin();
+        dp[i] = dp[k-1] + i-k;
+        res = min(res, dp[i] + n-i);
+    }
     cout << res;
 }
 

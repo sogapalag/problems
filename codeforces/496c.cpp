@@ -37,9 +37,54 @@ const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100001;
 
+int n, m;
+char ta[111][111];
+int res = 0;
+
+void check(vpi & crt, int j){
+    if (j == m){
+        return;
+    }
+    //for (auto &p: crt){
+    //    cout << p.f << ' ' << p.s << ',';
+    //}
+    //cout << endl;
+    vpi nex;
+    bool valid = true;
+    for (auto &p: crt){
+        char c = ta[p.f][j];
+        int l = p.f;
+        FOR(i, p.f, p.s){
+            if (c > ta[i][j]){
+                valid = false;
+                res += 1;
+                break;
+            }else if (c < ta[i][j]){
+                nex.pb(mp(l, i));
+                l = i;
+                c = ta[i][j];
+            }
+        }
+        if (!valid){
+            break;
+        }
+        nex.pb(mp(l, p.s));
+    }
+    if (valid){
+        check(nex, j+1);
+    }else{
+        check(crt, j+1);
+    }
+}
 
 void solve() {
-    int res = 0;
+    cin >> n >> m;
+    F0R(i, n){
+        cin >> ta[i];
+    }
+    vpi crt;
+    crt.pb(mp(0, n));
+    check(crt, 0);
     cout << res;
 }
 

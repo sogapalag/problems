@@ -38,8 +38,17 @@ const ll INF = 1e18;
 const int MX = 100001;
 
 
+// first find left^ MSB
+//  => (MSB1)111...111
 void solve() {
-    int res = 0;
+    ll l, r;
+    cin >> l >> r;
+    ll res = l ^ r;
+    res |= res >> 1;
+    res |= res >> 2;
+    res |= res >> 4;
+    res |= res >> 16;
+    res |= res >> 32;
     cout << res;
 }
 
