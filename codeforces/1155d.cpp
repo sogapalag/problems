@@ -38,15 +38,30 @@ const ll INF = 1e18;
 const int MX = 100001;
 const int CF = 300005;
 
+int n, x;
+ll a[CF];
+// space could O(1)
+// dp[i][0..=2], end with i, 0: still not use x; 1: using x; 2: can't use x.
+ll dp[CF][3];
 
 void solve() {
-    int res = 0;
+    cin >> n >> x;
+    FOR(i, 1, n+1){
+        cin >> a[i];
+    }
+    ll res = 0;
+    dp[0][0] = dp[0][1] = dp[0][2] = 0;
+    FOR(i, 1, n+1){
+        dp[i][0] = max(dp[i-1][0] + a[i], a[i]);
+        ll ax = a[i] * x;
+        dp[i][1] = max({dp[i-1][0] + ax, dp[i-1][1] + ax, ax});
+        dp[i][2] = max({dp[i-1][1] + a[i], dp[i-1][2] + a[i], a[i]});
+        res = max({res, dp[i][0], dp[i][1], dp[i][2]});
+    }
     cout << res;
 }
 
 int main() {
-    //ios_base::sync_with_stdio(false);
-    //cin.tie(NULL);
     solve();
     cout << endl;
 }

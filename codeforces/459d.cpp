@@ -38,15 +38,56 @@ const ll INF = 1e18;
 const int MX = 100001;
 const int CF = 300005;
 
+const int N = 1000000+5;
+int n;
+int a[N];
+int l[N];
+int r[N];
+int tr[2 * N];
+
+void upd(int p, int val){
+    for (tr[p += n] += val; p > 1; p >>= 1){
+        tr[p>>1] = tr[p] + tr[p^1];
+    }
+}
+// query [l, r)
+int query(int l, int r){
+    int res = 0;
+    for (l += n, r += n; l < r; l >>= 1, r >>= 1){
+        if (l & 1)
+            res += tr[l++];
+        if (r & 1)
+            res += tr[--r];
+    }
+    return res;
+}
 
 void solve() {
-    int res = 0;
+    cin >> n;
+    FOR(i, 1, n+1){
+        cin >> a[i];
+    }
+    unordered_map<int, int> map;
+    FOR(i, 1, n+1){
+        map[a[i]] += 1;
+        l[i] = map[a[i]] - 1; // for 0-based
+    }
+    map.clear();
+    FORd(i, 1, n+1){
+        map[a[i]] += 1;
+        r[i] = map[a[i]] - 1; // for 0-based
+    }
+
+    memset(tr, 0, sizeof tr);
+    ll res = 0;
+    FOR(i, 1, n+1){
+        res += i-1 - query(0, r[i]+1);
+        upd(l[i], 1);
+    }
     cout << res;
 }
 
 int main() {
-    //ios_base::sync_with_stdio(false);
-    //cin.tie(NULL);
     solve();
     cout << endl;
 }

@@ -38,15 +38,52 @@ const ll INF = 1e18;
 const int MX = 100001;
 const int CF = 300005;
 
+const int N = (1<<17) + 5;
+int e, m;
+int n;
+int blz; // = __builtin_clz(n);
+int a[2 * N];
+
+void build(){
+    int dif;
+    FORd(i, 1, n){
+        dif = __builtin_clz(i) - blz;
+        if (dif & 1){
+            a[i] = a[i<<1] | a[i<<1|1];
+        }else{
+            a[i] = a[i<<1] ^ a[i<<1|1];
+        }
+    }
+}
+
+void upd(int p, int val){
+    int dif;
+    for (a[p += n] = val; p > 1; p >>= 1){
+        dif = __builtin_clz(p>>1) - blz;
+        if (dif & 1){
+            a[p>>1] = a[p] | a[p^1];
+        }else{
+            a[p>>1] = a[p] ^ a[p^1];
+        }
+    }
+}
 
 void solve() {
-    int res = 0;
-    cout << res;
+    cin >> e >> m;
+    n = 1 << e;
+    FOR(i, n, n<<1){
+        cin >> a[i];
+    }
+    blz = __builtin_clz(n);
+    build();
+    int p, b;
+    F0R(i, m){
+        cin >> p >> b;
+        upd(p-1, b);
+        cout << a[1] << endl;
+    }
 }
 
 int main() {
-    //ios_base::sync_with_stdio(false);
-    //cin.tie(NULL);
     solve();
-    cout << endl;
 }
