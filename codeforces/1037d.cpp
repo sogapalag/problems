@@ -45,10 +45,50 @@ const ll INF = 1e18;
 const int MX = 100001;
 const int CF = 300005;
 
+const int N = 2*1e5+5;
+int n;
+int a[N];
+int id;
+map<int, set<int>> graph;
+queue<int> q;
+
+void gg(){
+    cout << "No\n";
+    exit(0);
+}
+
+void bfs(){
+    while (!q.empty()){
+        int vtx = q.front();
+        q.pop();
+        int len = sz(graph[vtx]);
+        F0R(_, len){
+            int nei = a[id++];
+            auto it = graph[vtx].find(nei);
+            if (it == graph[vtx].end())
+                gg();
+            graph[nei].erase(vtx);
+            q.push(nei);
+        }
+    }
+    cout << "YES";
+}
 
 void solve() {
-    int res = 0;
-    cout << res;
+    cin >> n;
+    int x, y;
+    FOR(i, 1, n){
+        cin >> x >> y;
+        graph[x].insert(y);
+        graph[y].insert(x);
+    }
+    FOR(i, 1, n+1)
+        cin >> a[i];
+
+    q.push(1);  id = 1;
+    if (a[id++] != 1)
+        gg();
+    bfs();
 }
 
 int main() {
