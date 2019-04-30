@@ -47,8 +47,7 @@ using namespace std;
 // raw data(leaf) in a[n,...2*n)
 // i: parent; 2*i, 2*i+1 children.
 //
-//
-// range-assign, one-elem query, 292e  // doesn't affect
+// classic update-one, query range
 
 const int N = (1<<16) + 5;
 int n; // array size
@@ -81,7 +80,10 @@ int query(int l, int r){
 }
 
 ///////////////////////////////
-// range assign, single element access max
+// range assign, single element access max // ops no effect
+//
+// e.g. cf/292e  
+//
 // range assign
 void upd(int l, int r, int val){
     for (l += n, r += n; l < r; l >>= 1, r >>= 1){
@@ -103,6 +105,8 @@ int query(int p){
 //  range add '+', query global max.
 //  lazy
 //  seg[1], the max.
+//
+//  e.g. ks/2019b3
 const int MX = 1e5+5;
 int seg[MX<<2], lzy[MX<<2]; //memset
 void split(int _l, int _r, int val, int p=1, int l=0, int r=MX){
