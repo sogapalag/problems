@@ -45,6 +45,7 @@
 // i: parent; 2*i, 2*i+1 children.
 //
 //
+// range-assign, one-elem query, 292e  // doesn't affect
 
 const int N = (1<<16) + 5;
 int n; // array size
