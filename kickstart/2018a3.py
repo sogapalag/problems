@@ -1,3 +1,4 @@
+# Scrambled_Words
 def trans(word: str) -> tuple:
     letters_count = [0] * 26
     for w in word:
@@ -43,6 +44,6 @@ def main():
         n, a, b, c, d = int(n), int(a), int(b), int(c), int(d)
         res = solve(L, words, s1, s2, n, a, b, c, d)
         print('Case #{}: {}'.format(i+1, res))
-        
+
 if __name__ == '__main__':
     main()
