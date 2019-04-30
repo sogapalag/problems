@@ -43,7 +43,7 @@ template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_ord
 const int MOD = 1000000007;
 const ll INF = 1e18;
 const int inf = 0x3f3f3f3f;
-const int MX = 100001;
+const int MX = 100005;
 const int CF = 300005;
 
 

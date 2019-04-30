@@ -37,6 +37,9 @@
 // https://codeforces.com/blog/entry/11080
 // /////////////////////////
 
+#include <bits/stdc++.h>
+using namespace std;
+
 #define FORd(i,a,b) for (int i = (b)-1; i >= a; i--)
 
 /////////////////////////////////
@@ -76,3 +79,42 @@ int query(int l, int r){
     }
     return res;
 }
+
+///////////////////////////////
+// range assign, single element access max
+// range assign
+void upd(int l, int r, int val){
+    for (l += n, r += n; l < r; l >>= 1, r >>= 1){
+        if (l & 1)
+            tr[l++] = val;
+        if (r & 1)
+            tr[--r] = val;
+    }
+}
+// max
+int query(int p){
+    int tmp = 0;
+    for (p += n; p > 0; p >>= 1)
+        tmp = max(tmp, tr[p]);
+    return tmp;
+}
+
+//////////////////////////////////////////
+//  range add '+', query global max.
+//  lazy
+//  seg[1], the max.
+const int MX = 1e5+5;
+int seg[MX<<2], lzy[MX<<2]; //memset
+void split(int _l, int _r, int val, int p=1, int l=0, int r=MX){
+    if (_r <= l || r <= _l) return;
+    if (_l <= l && r <= _r){
+        seg[p] += val;
+        lzy[p] += val;
+        return;
+    }
+    int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
+    split(_l, _r, val, pl, l, m);
+    split(_l, _r, val, pr, m, r);
+    seg[p] = max(seg[pl], seg[pr]) + lzy[p];
+}
+
