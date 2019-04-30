@@ -45,9 +45,48 @@ const ll INF = 1e18;
 const int MX = 100005;
 const int CF = 300005;
 
+int n;
+ll k;
+int a[MX];
+ll rig[MX];
 
 void solve() {
-    int res = 0;
+    cin >> n >> k;
+    FOR(i, 1, n+1)
+        cin >> a[i];
+    Tree<pi> sr;
+    rig[n+1] = 0;
+    FORd(i, 1, n+1){
+        int tmp = a[i];
+        rig[i] = rig[i+1] + sr.order_of_key(mp(tmp, 0));
+        sr.insert(mp(tmp, i));
+    }
+    Tree<pi> sl;
+    ll res = 0, crt = rig[1];
+    if (crt <= k){
+        ll t = n;
+        res = t*(t-1)/2;
+        cout << res;
+        return;
+    }
+    pi tmp = mp(a[1], 1);
+    sl.insert(tmp); sr.erase(tmp);
+    int i=1, j=2;
+    while (i<n){
+        while (crt > k && j <= n){
+            crt -= rig[j] - rig[j+1];
+            crt -= i - sl.order_of_key(mp(a[j], MX));
+            sr.erase(mp(a[j], j));
+            j++;
+        }
+        if (j>n)
+            break;
+        res += n-j+1;
+        crt += i - sl.order_of_key(mp(a[i+1], MX));
+        crt += sr.order_of_key(mp(a[i+1], 0));
+        i++;
+        sl.insert(mp(a[i], i));
+    }
     cout << res;
 }
 
