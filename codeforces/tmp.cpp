@@ -40,6 +40,14 @@ template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_ord
 #define ub upper_bound
 #define all(x) x.begin(), x.end()
 
+#define __seg_p (int _l, int _r, int val, int p=1, int l=0, int r=N)
+#define __seg_out if (_r <= l || r <= _l)
+#define __seg_in if (_l <= l && r <= _r)
+#define __seg_one if (l+1 == r)
+#define __seg_calc int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
+#define __seg_l (_l, _r, val, pl, l, m)
+#define __seg_r (_l, _r, val, pr, m, r)
+
 const int MOD = 1000000007;
 const ll INF = 1e18;
 const int MX = 100005;

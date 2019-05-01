@@ -40,6 +40,14 @@ template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_ord
 #define ub upper_bound
 #define all(x) x.begin(), x.end()
 
+#define __seg_p (int _l, int _r, int val, int p=1, int l=0, int r=N)
+#define __seg_out if (_r <= l || r <= _l)
+#define __seg_in if (_l <= l && r <= _r)
+#define __seg_one if (l+1 == r)
+#define __seg_calc int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
+#define __seg_l (_l, _r, val, pl, l, m)
+#define __seg_r (_l, _r, val, pr, m, r)
+
 const int MOD = 1000000007;
 const ll INF = 1e18;
 const int inf = 0x3f3f3f3f;
@@ -56,31 +64,31 @@ int x[N], y[N];
 set<int> s[N];
 
 int seg[N<<2];
-void split(int _l, int _r, int val, int p=1, int l=0, int r=N){
-    if (_r <= l || r <= _l) return;
-    if (_l <= l && r <= _r){
+void split __seg_p {
+    __seg_out return;
+    __seg_in {
         seg[p] = val;
         return;
     }
-    int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
-    split(_l, _r, val, pl, l, m);
-    split(_l, _r, val, pr, m, r);
+    __seg_calc;
+    split __seg_l;
+    split __seg_r;
     seg[p] = max(seg[pl], seg[pr]);
 }
 
-int query(int _l, int _r, int val, int p=1, int l=0, int r=N){
-    if (_r <= l || r <= _l) return inf;
-    if (l+1 == r){
+int query __seg_p {
+    __seg_out return inf;
+    __seg_one {
         if (seg[p] >= val)
             return l;
     }
     if (seg[p] < val)
         return inf;
-    int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
-    int ql = query(_l, _r, val, pl, l, m);
+    __seg_calc;
+    int ql = query __seg_l;
     if (ql < inf)
         return ql;
-    int qr = query(_l, _r, val, pr, m, r);
+    int qr = query __seg_r;
     return qr;
 }
 
