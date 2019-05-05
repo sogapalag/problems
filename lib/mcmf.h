@@ -4,6 +4,16 @@
 // https://cp-algorithms.com/graph/edmonds_karp.html
 // https://cp-algorithms.com/graph/min_cost_flow.html
 
+// minimum cost (max) flow algorithm.
+//
+// sson[u] store the recent out-edge-id from u;
+// pre[v] store the recover path, last edge id
+// dis[v], store the distance from s to v;
+// trk[v], flag v on track.
+
+// bro, edge id from same origin. alongside sson, to recover adj.
+// e, e^1, reverse edges.
+
 const int V = 512;
 const int E = 512<<2;
 int sson[V], pre[V], dis[V], trk[V];
