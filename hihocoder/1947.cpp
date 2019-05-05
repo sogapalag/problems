@@ -60,10 +60,12 @@ int lder[N];
 vi graph[N];
 
 void bfs(){
-    priority_queue<int> q;
+    //...before use pq still pass, since we push only #income=0
+    // once push, their oder does't matter.
+    queue<int> q;
     q.push(1);
     while (!q.empty()){
-        int v = q.top();
+        int v = q.front();
         q.pop();
         for (auto u: graph[v]){
             lder[u]++; // use -k repre the #income edges
