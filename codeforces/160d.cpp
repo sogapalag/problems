@@ -106,6 +106,9 @@ void tarjan(int u, int fa=-1){
     low[u] = num[u] = tim++;
     for (int e=sson[u]; ~e; e=edge[e].bro){
         int v = edge[e].to;
+        // here must be this, cannot use v == fa, tarjan(v, u)
+        // since there'll be multi-edge, 
+        // although plain graph doen't, but component graph does.
         if (e == (fa^1)) continue;
         if (num[v])
             low[u] = min(low[u], num[v]);
@@ -123,6 +126,8 @@ void reset(int u){
     low[u] = num[u] = 0;
 }
 
+// process same costs' edge, 
+// which is any iff bridge in component graph.
 void solve() {
     cin >> n >> m;
     F0R(i, m){
