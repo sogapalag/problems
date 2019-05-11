@@ -2,7 +2,6 @@
 
 using namespace std;
 
-#define F0R(i, a) for (int i=0; i<(a); i++)
 
 typedef long long ll;
 
@@ -38,18 +37,18 @@ ll inv(ll a, ll p=MOD){
 const int COL = 101;
 void mat_mult(ll n, ll A[][COL], ll B[][COL]){
     ll res[n][n];
-    F0R(i, n){
-        F0R(j, n){
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             res[i][j] = 0;
-            F0R(k, n){
+            for (int k = 0; k < n; k++) {
                 res[i][j] += A[i][k] * B[k][j];
                 if (res[i][j] >= MOD)
                     res[i][j] %= MOD;
             }
         }
     }
-    F0R(i, n)
-        F0R(j, n)
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
             A[i][j] = res[i][j];
 }
 
@@ -57,14 +56,14 @@ void mat_mult(ll n, ll A[][COL], ll B[][COL]){
 void mat_pow(ll n, ll A[][COL], ll exp){
     ll res[n][COL];
     memset(res, 0, sizeof res);
-    F0R(i, n)
+    for (int i = 0; i < n; i++)
         res[i][i] = 1;
     for(; exp; exp >>= 1){
         if (exp & 1)
             mat_mult(n, res, A);
         mat_mult(n, A, A);
     }
-    F0R(i, n)
-        F0R(j, n)
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
             A[i][j] = res[i][j];
 }

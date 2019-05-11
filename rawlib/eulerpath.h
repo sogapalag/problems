@@ -2,17 +2,9 @@
 
 using namespace std;
 
-typedef vector<int> vi;
-
-#define sz(x) (int)(x).size()
-#define mp make_pair
-#define pb push_back
-#define f first
-#define s second
-
 const int N = 1e5 + 5;
 int n;
-vi res;
+vector<int> res;
 
 map<int, multiset<int>> graph;
 
@@ -25,9 +17,9 @@ int entry(){
     int cnt = 0; // count #odd degree
     int res = 1; // if all even-degree, any entry.
     for (auto &v: graph){
-        if (sz(v.s) & 1){
+        if (v.second.size() & 1){
             cnt += 1;
-            res = v.f;
+            res = v.first;
         }
     }
     if (cnt > 2)
@@ -45,11 +37,11 @@ void dfs(int vtx){
         graph[nei].erase(rit); // if val, will erase all; we only one.
         dfs(nei);
     }
-    res.pb(vtx); //a reverse chain. however valid
+    res.push_back(vtx); //a reverse chain. however valid
 }
 
 void print(){
-    if (sz(res) != n)
+    if (res.size() != n)
         gg(); // not connected
     for (auto k: res)
         cout << k << ' ';

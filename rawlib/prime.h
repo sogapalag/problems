@@ -1,11 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef pair<int, int> pi;
-typedef vector<pi> vpi;
-#define mp make_pair
-#define pb push_back
-
 const int N = 1e6+5;
 bool prime[N];
 // for large n, e.g. 1e9, keep [0..sqrt(n)]
@@ -27,8 +22,8 @@ void sieve(int n=45000){
 // thus a O(log n) time
 // for large, below
 // num>1, e.g. 150 => (2, 1), (3, 1), (5, 2)
-vpi decomp(int num){
-    vpi be;
+vector<pair<int, int>> decomp(int num){
+    vector<pair<int, int>> be;
     for (int p=2; p*p <= num && num > 1; p++){
         if (prime[p]){
             int exp = 0;
@@ -37,12 +32,12 @@ vpi decomp(int num){
                 num /= p;
             }
             if (exp != 0){
-                be.pb(mp(p, exp));
+                be.emplace_back(p, exp);
             }
         }
     }
     if (num != 1){
-        be.pb(mp(num, 1));
+        be.emplace_back(num, 1);
     }
     return be;
 }

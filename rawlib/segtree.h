@@ -40,7 +40,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define FORd(i,a,b) for (int i = (b)-1; i >= a; i--)
 
 /////////////////////////////////
 // root is 1, perfect tree; hint: n is not power of 2 also right.
@@ -54,7 +53,7 @@ int n; // array size
 int tr[2 * N];
 
 void build() {
-    FORd(i, 1, n){
+    for (int i = n-1; i >= 1; i--) {
         // or other build rule
         tr[i] = tr[i<<1] + tr[i<<1|1];
     }
