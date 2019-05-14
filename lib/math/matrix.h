@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-
+//~ SNIPPETS_START matrix
 namespace math {
     // A = A X B, 0-based, n:dim
     const int COL = 101;
@@ -35,3 +35,4 @@ namespace math {
                 A[i][j] = res[i][j];
     }
 }
+//~ SNIPPETS_END

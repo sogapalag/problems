@@ -1,5 +1,5 @@
 
-
+//~ SNIPPETS_START dsu
 struct Dsu {
     int n;
     vector<int> p;
@@ -22,3 +22,4 @@ struct Dsu {
         return find(x) == find(y);
     }
 };
+//~ SNIPPETS_END

@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-
+//~ SNIPPETS_START modular
 namespace math {
-    const int MOD = 1000000007;
+    const int MOD = 1000000007; // 998244353
     
     template <typename T>
     struct modular {
@@ -210,3 +210,4 @@ namespace math {
 }
 using namespace math;
 typedef modular<int> mint;
+//~ SNIPPETS_END
