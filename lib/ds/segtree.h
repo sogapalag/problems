@@ -17,15 +17,14 @@ struct Segtree {
     const T ID;
     vector<T> v; //tree
     
-    Segtree(int _n = 100005) : n(_n), sz_v(n<<1) {
-        ID = T(); // set id
+    Segtree(int _n = 100005) : n(_n), sz_v(n<<1), ID() {
         v.resize(sz_v);
-        init(); build();
     }
     void init() {// set leaf value
         for (int i = 0; i < n; i++) {
             // v[i+n] = raw[i];
         }
+        build();
     }
     void build() {
         for (int i = n-1; i >= 0; i--) {
@@ -41,8 +40,8 @@ struct Segtree {
     inline T query(int l, int r) {
         T resl(ID), resr(ID);
         for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
-            if (l & 1) { resl = v[l++] + resl; }
-            if (r & 1) { resr = resr + v[--r]; }
+            if (l & 1) { resl = resl + v[l++]; }
+            if (r & 1) { resr = v[--r] + resr; }
         }
         return resl + resr;
     }
@@ -62,14 +61,14 @@ struct Segtree {
 
 struct Node {// monoid
     int x;
-    Node(int _=0) : x(-0x3f3f3f3f) {} // write your own identity
-    Node(const Node& _r) : x(_r.x) {}// write your own
-    Node& operator = (const Node& _r) {
-        x = _r.x; // write your own
+    Node(int _=0) : x(-0x3f3f3f3f) {} // DO!! identity
+    Node(const Node& _r) : x(_r.x) {}// DO!! set
+    Node& operator = (const Node& _r) {// DO!! set
+        x = _r.x;
         return *this;
     }
-    Node& operator += (const Node& _r) {
-        x = max(x, _r.x); // write your own  !! may not communitative
+    Node& operator += (const Node& _r) {// DO!! may not communitative
+        x = max(x, _r.x);
         return *this;
     }
     friend Node operator + (const Node& _lhs, const Node& _rhs) {
