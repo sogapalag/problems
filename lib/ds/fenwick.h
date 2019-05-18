@@ -1,3 +1,5 @@
+#include <bits/stdc++.h>
+using namespace std;
 // fenwick tree, aka, Binary indexed tree.
 // key trick least sig bits LSB(i) = (i&-i)
 // each idx responsible [idx - LSB(i) + 1, idx]
@@ -9,7 +11,7 @@ struct Fenwick {
     int n;
     vector<T> v;
     
-    Fenwick(int size = 100005) : n(size+1), v(n, 0) {}
+    Fenwick(int size = 100005) : n(size), v(n+1, 0) {}
     inline void add(int p, T val) {
         for (; p <= n; p += (p&-p)) { v[p] += val; }
     }
