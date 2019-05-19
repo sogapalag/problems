@@ -1,8 +1,7 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
-
+//~ SNIPPETS_START seglazy
 template <typename T, typename U>
 struct Seglazy {
     static const int H = 17; //20
@@ -67,29 +66,39 @@ struct Seglazy {
     }    
 };
 
-typedef Seglazy<long long, long long> Seg;
-void solve() {
-    int n, c;
-    cin >> n >> c;
-    Seg seg;
-    while (c--) {
-        int op, x, y, val;
-        cin >> op >> x >> y;
-        if (op) {
-            cout << seg.query(x, y+1) << "\n";
-        } else {
-            cin >> val;
-            seg.update(x, y+1, val);
-        }
-    }
-}
 
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    int t; cin >> t;
-    while (t--) {
-        solve();
+struct Node {// monoid
+    int x;
+    
+    Node(int _=0) : x(-0x3f3f3f3f) {} // write your own identity
+    Node(const Node& _r) : x(_r.x) {}// write your own
+    Node& operator = (const Node& _r) {
+        x = _r.x; // write your own
+        return *this;
     }
-    cout << endl;
+    Node& operator += (const Node& _r) {
+        x = max(x, _r.x); // write your own  !! may not communitative
+        return *this;
+    }
+    friend Node operator + (const Node& _lhs, const Node& _rhs) {
+        return Node(_lhs) += _rhs; // derive from +=
+    }
+};
+
+//~ SNIPPETS_END
+
+
+const int MX = 1e5+5;
+int seg[MX<<2], lzy[MX<<2]; //memset
+void split(int _l, int _r, int val, int p=1, int l=0, int r=MX){
+    if (_r <= l || r <= _l) return;
+    if (_l <= l && r <= _r){
+        seg[p] += val;
+        lzy[p] += val;
+        return;
+    }
+    int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
+    split(_l, _r, val, pl, l, m);
+    split(_l, _r, val, pr, m, r);
+    seg[p] = max(seg[pl], seg[pr]) + lzy[p];
 }
