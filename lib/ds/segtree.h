@@ -33,8 +33,8 @@ struct Segtree {
     }
     inline void update(int p, T val) {
         assert(p>=0);
-        for (v[p += n] = val; p > 1; p >>= 1) {
-            v[p>>1] = v[p] + v[p^1];
+        for (v[p += n] = val; p >>= 1;) {
+            v[p] = v[p<<1] + v[p<<1|1];
         }
     }
     inline T query(int l, int r) {
