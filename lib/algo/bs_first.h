@@ -6,7 +6,7 @@ using namespace std;
 // when range [l, r), has property notP~P, want first P.
 // when return r, means not found.
 template <typename T>
-T bs_fisrt(T l, T r, function<bool (T)> f) {
+T bs_first(T l, T r, function<bool (T)> f) {
     assert(l < r);
     T mid;
     while (l != r) {
