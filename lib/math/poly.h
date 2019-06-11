@@ -128,7 +128,6 @@ Poly<T> inverse(const Poly<T>& a, int n=0) {
         for (int i = k>>1; i < min((int)x.size(), k); i++) {
             res[i] -= x[i];
         }
-
     }
     res.resize(n);
     return res;
