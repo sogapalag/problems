@@ -11,7 +11,7 @@ T bs_last(T l, T r, function<bool (T)> f) {
     assert(l < r);
     T mid;
     while (l != r) {
-        mid = (l+r)/2;
+        mid = l + (r-l)/2;
         if (f(mid)) {
             l = mid + 1;
         }else {
