@@ -12,7 +12,7 @@ struct Seglazy {
     vector<T> v; // tree
     vector<U> d; // lazy
     
-    Seglazy() : sz_v(SZ<<1), ID(0), UN(0), v(sz_v, 0), d(sz_v, 0) {
+    Seglazy() : sz_v(SZ<<1), ID(), UN(0), v(sz_v, 0), d(sz_v, 0) {
         //v.resize(sz_v);
         //d.resize(sz_v);
     }
@@ -31,7 +31,7 @@ struct Seglazy {
         v[p] = v[pl] + v[pr];
     }
     inline void apply(int p) {// do!! use info, may need length, pass l, r in
-        v[p] += d[p] * len(p);
+        v[p] += d[p] * len(p); // .x
     }
     inline void store(int p, const U& val) {// do!! store info, careful!! info chain
         d[p] += val;
@@ -70,7 +70,8 @@ struct Seglazy {
 struct Node {// monoid
     int x;
     
-    Node(int _=0) : x(-0x3f3f3f3f) {} // write your own identity
+    Node() : x(-0x3f3f3f3f) {} // write your own identity
+    Node(int _x) : x(_x) {}
     Node(const Node& _r) : x(_r.x) {}// write your own
     Node& operator = (const Node& _r) {
         x = _r.x; // write your own
@@ -85,6 +86,7 @@ struct Node {// monoid
     }
 };
 
+using Seg=Seglazy<Node, int>;
 //~ SNIPPETS_END
 
 
