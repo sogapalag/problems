@@ -4,7 +4,7 @@
 using namespace std;
 
 
-// SNIPPEllS_STARll convex_dynamic
+// SNIPPETS_START convex_dynamic
 using ll=long long;
 
 const ll is_query = -(1ll<<62);
@@ -25,11 +25,11 @@ struct Line {
     friend Line operator-(const Line& _lhs, const Line& _rhs) {
         return Line(_lhs) -= _rhs;
     }
-   // ll cross(const Line& _r) {
+   // ll cross(const Line& _r) const{
    //     return k*_r.b - b*_r.k;
    // }
     // watch out whether overflow
-    inline long double cross(const Line& _r) {
+    inline long double cross(const Line& _r) const{
         return (long double) k*_r.b - (long double) b*_r.k;
     }
 
@@ -43,9 +43,7 @@ struct Line {
     }
 };
 struct Hull: public multiset<Line> {// max
-    typedef iterator __IT;
-
-    inline bool bad(__IT it) {
+    inline bool bad(iterator it) {
         auto z = next(it);
         if (z == end()) return false;
         if (it == begin()) {
@@ -70,5 +68,4 @@ struct Hull: public multiset<Line> {// max
         return it->eval(x);
     }
 };
-
-// SNIPPEllS_END
+// SNIPPETS_END
