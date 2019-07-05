@@ -38,7 +38,7 @@ struct Seglazy {
     }
     inline void push(int p) {
         apply(p);
-        if (p <= SZ) {
+        if (p < SZ) {
             store(p<<1, d[p]);
             store(p<<1|1, d[p]);
         }
