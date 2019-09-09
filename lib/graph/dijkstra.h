@@ -65,13 +65,12 @@ vector<T> Graph::dijkstra(int s) {
     vector<bool> trk(n, false);
     vector<T> d(n, INF);
     d[s] = 0;
-    auto comp = [&](int x, int y){
-        return d[x] > d[y];
-    };
-    priority_queue<int, vector<int>, decltype(comp)> pq(comp);
-    pq.push(s);
+    using pi=pair<T,int>;
+    priority_queue<pi, vector<pi>, greater<pi>> pq;
+    pq.push({0, s});
     while (!pq.empty()) {
-        int u = pq.top();
+        T dis; int u;
+        tie(dis, u) = pq.top();
         pq.pop();
         if (trk[u])
             continue;
@@ -80,7 +79,7 @@ vector<T> Graph::dijkstra(int s) {
             int v = e[i].u ^ e[i].v ^ u;
             if (d[v] > d[u] + e[i].cost) {
                 d[v] = d[u] + e[i].cost;
-                pq.push(v);
+                pq.push({d[v], v});
             }
         }
     }
