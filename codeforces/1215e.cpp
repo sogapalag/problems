@@ -1,28 +1,11 @@
 #include <bits/stdc++.h>
 
 using namespace std;
+using ll=long long ;
+ll d[20][20];
+ll dp[1<<20];
 
-template <typename T=int>
-struct Fenwick {
-    int n;
-    vector<T> v;
-    
-    Fenwick(int size = 100005) : n(size), v(n+1, 0) {}
-    inline void add(int p, T val) {
-        for (; p <= n; p += (p&-p)) { v[p] += val; }
-    }
-    inline T query(int p) {
-        T tmp = 0;
-        for (; p > 0; p -= (p&-p)) { tmp += v[p]; }
-        return tmp;
-    }
-    inline T query(int l, int r) {
-        return query(r) - query(l-1);
-    }
-};
-
-// sum of cross inversions
-// TODO rigorous proof?
+// K_20 directed graph, one lowest cost path(19 edges)
 void solve() {
     int n; cin >> n;
     vector<int> a[20];
@@ -30,19 +13,33 @@ void solve() {
         int x; cin >> x;
         a[x-1].emplace_back(i);
     }
-    long long res = 0;
-    for (int k = 0; k < 20; k++) {
-        Fenwick<int> st(n);
-        for (int p: a[k]) st.add(p, 1);
-        for (int i = k+1; i < 20; i++) {
-            long long sum = 0;
-            for (int p: a[i]) sum += st.query(p);
-            long long tot = 1ll*a[k].size() * a[i].size();
-            sum = min(sum, tot-sum);
-            res += sum;
+    // inversions
+    for (int i = 0; i < 20; i++) {
+        for (int j = 0; j < 20; j++) {
+            ll sum = 0;
+            for (int x: a[j]) sum += lower_bound(a[i].begin(), a[i].end(), x) - a[i].begin();
+            d[i][j] = sum;
         }
     }
-    cout << res;
+    // for msk, choose i as occur before other set bits
+    // since sub less msk, so increase-order process
+    memset(dp, 0x3f, sizeof dp);
+    const int MSK = 1<<20; 
+    dp[0] = 0;
+    for (int msk = 1; msk < MSK; msk++) {
+        for (int i = 0; i < 20; i++) {
+            if (msk & (1<<i)) {
+                ll sum = 0;
+                for (int j = 0; j < 20; j++) {
+                    if (j!=i && (msk & (1<<j))) {
+                        sum += d[i][j];
+                    }
+                }
+                dp[msk] = min(dp[msk], dp[msk^(1<<i)] + sum);
+            }
+        }
+    }
+    cout << dp[MSK-1];
 }
 
 int main() {
