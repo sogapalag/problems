@@ -2,6 +2,8 @@
 
 using namespace std;
 
+// crt: m1=n1^-1 (mod m2). by exgcd. so res work
+// excrt: res formula obviously sat for a1, replace n1m1=g-n2m2 get the similar formula for a2.
 
 // SNIPPETS_START crt
 template <typename T=int>
