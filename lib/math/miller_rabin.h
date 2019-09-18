@@ -1,7 +1,8 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-
+// https://crypto.stanford.edu/pbc/notes/numbertheory/millerrabin.html
+// rewrite from https://docs.rs/primal-check/0.2.3/src/primal_check/is_prime.rs.html#102-149
 // SNIPPETS_START miller_rabin
 using u64=unsigned long long ;
 
