@@ -4,7 +4,7 @@ using namespace std;
 
 
 // after some drawing, note only both end on board matter.
-// transform board to a straight line, then each seg must not intersect. stack maintain.
+// transform board to a straight line, then each seg must not intersect(can contain). stack maintain.
 void solve() {
     int R,C;
     cin >> R >> C;
