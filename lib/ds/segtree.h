@@ -27,7 +27,7 @@ struct Segtree {
         build();
     }
     void build() {
-        for (int i = n-1; i >= 0; i--) {
+        for (int i = n-1; i > 0; i--) {
             v[i] = v[i<<1] + v[i<<1|1];
         }
     }
