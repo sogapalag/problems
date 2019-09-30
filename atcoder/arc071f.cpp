@@ -70,7 +70,7 @@ typedef modular<int> mint;
 //
 // editorial has simple method, dp[i]: a[i..] all equal.
 //  by consider a[1]=1, brand new dp[i-1]
-//              a[1]=x, a[2]==1, dp[i-x-1]
+//              a[1]=x, a[2]==1, dp[i-x-1] /  n-x+1, x>i
 //              a[1]=x, a[2]!=1, (n-1)^2
 void solve() {
     int n; cin >> n;
