@@ -6,6 +6,8 @@ using namespace std;
 // https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/zalg.pdf
 // note [l,r] is the r-right-most matched z-box
 // so z[i-l] used quick back up
+// [0..] <-> [l..r]
+// [i-l..] ... [i..] implies [i..] match [l..r], thus [i..] match [0..]
 
 // SNIPPETS_START z_fn
 // z[i] = len of lcp of s, s[i..]; lcp(longest common prefix)
