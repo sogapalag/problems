@@ -81,12 +81,16 @@ void solve() {
             b += x;
         }
         for (int j = 0; j <= i; j++) {
+            // note although crt <=r, <=b could seem invalid, but since by induction previous is valid,
+            // thus we exclude invalid
             if (j <= r && i-j <= b) {
                 dp[i][j] += dp[i-1][j];
                 if(j)dp[i][j] += dp[i-1][j-1];
             }
         }
     }
+    // besides, res could be calced as sum_j dp[n][j] * c(n,r-j)
+    // since after first n decided, follow n is comb
     cout << dp[2*n][r];
 }
 
