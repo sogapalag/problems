@@ -14,8 +14,8 @@ using namespace std;
 
 // SNIPPETS_START graph_dinic
 struct Dinic {
-    using F = int;
-    const static F INF = 0x3f3f3f3f; 
+    using F = int; const static F INF = 0x3f3f3f3f; 
+    //using F = long long; const static F INF = 0x3f3f3f3f3f3f3f3f; 
     struct Edge {
         int v, bro; F cap;
         Edge() {}
@@ -60,7 +60,7 @@ struct Dinic {
         for (int& i = cur[u]; i != -1; i = e[i].bro) {
             int v = e[i].v;
             if (e[i].cap != 0 && d[v] == d[u] + 1) {
-                int flow = dfs(v, min(e[i].cap, lim-tot));
+                F flow = dfs(v, min(e[i].cap, lim-tot));
                 tot += flow;
                 e[i].cap -= flow;
                 e[i^1].cap += flow;
