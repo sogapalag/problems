@@ -61,7 +61,8 @@ struct Segtree {
 
 struct Node {// monoid
     int x;
-    Node(int _=0) : x(-0x3f3f3f3f) {} // DO!! identity
+    Node() : x(-0x3f3f3f3f) {} // DO!! identity
+    Node(int _x) : x(_x) {}
     Node(const Node& _r) : x(_r.x) {}// DO!! set
     Node& operator = (const Node& _r) {// DO!! set
         x = _r.x;
