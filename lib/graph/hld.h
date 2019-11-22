@@ -73,7 +73,7 @@ struct HLD {
 
     using F = function<void(int,int)>; // range operation tim(0)-based [l..r)
     // [u..v]
-    void for_v_path(int u, int v, F& f) {
+    void for_v_path(int u, int v, F f) {
         while (true) {
             if (sta[u] > sta[v]) swap(u, v);
             f(max(sta[top[v]], sta[u]), sta[v]+1);
@@ -81,7 +81,7 @@ struct HLD {
             across_light(v);
         }
     }
-    void for_v_sub(int u, F& f, bool exclude = 0) {
+    void for_v_sub(int u, F f, bool exclude = 0) {
         f(sta[u] + exclude, fin[u]);
     }
 };
