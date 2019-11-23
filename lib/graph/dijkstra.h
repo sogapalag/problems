@@ -4,10 +4,12 @@ using namespace std;
 
 // SNIPPETS_START graph_dijkstra
 struct Graph {
+    using CT = int; static const CT INF = 0x3f3f3f3f;
+    //using CT = long long; static const CT INF = 0x3f3f3f3f3f3f3f3f;
     struct Edge {
         int u, v;
-        int cost;
-        Edge(int _u, int _v, int _cost) : u(_u), v(_v), cost(_cost) {}
+        CT cost;
+        Edge(int _u, int _v, CT _cost) : u(_u), v(_v), cost(_cost) {}
     };
     int n, m;
     bool is_digraph;
@@ -30,7 +32,7 @@ struct Graph {
     void set_di(bool _di) {
         is_digraph = _di;
     }
-    inline void add(int u, int v, int cost=1) {
+    inline void add(int u, int v, CT cost=1) {
         assert(0 <= u && u < n);
         assert(0 <= v && v < n);
         if (is_digraph) {
@@ -46,43 +48,38 @@ struct Graph {
         m++;
     }
     void input(int _m) {
-        int u, v, c;
+        int u, v; CT c;
         for (int i = 0; i < _m; i++) {
             cin >> u >> v >> c;
             u--; v--; // input 1-based
             add(u, v, c);
         }
     }
-    template <typename T=int>
-    vector<T> dijkstra(int s);
-};
 
-// single source shortest path
-template <typename T>
-vector<T> Graph::dijkstra(int s) {
-    // modify T's INF
-    const int INF = 0x3f3f3f3f;
-    vector<bool> trk(n, false);
-    vector<T> d(n, INF);
-    d[s] = 0;
-    using pi=pair<T,int>;
-    priority_queue<pi, vector<pi>, greater<pi>> pq;
-    pq.push({0, s});
-    while (!pq.empty()) {
-        T dis; int u;
-        tie(dis, u) = pq.top();
-        pq.pop();
-        if (trk[u])
-            continue;
-        trk[u] = true;
-        for (int i: g[u]) {
-            int v = e[i].u ^ e[i].v ^ u;
-            if (d[v] > d[u] + e[i].cost) {
-                d[v] = d[u] + e[i].cost;
-                pq.push({d[v], v});
+    // if multi-source, add dummy SOURCE
+    // single source shortest path
+    vector<CT> dijkstra(int s) {
+        vector<bool> trk(n, false);
+        vector<CT> d(n, INF);
+        d[s] = 0;
+        using pi=pair<CT,int>;
+        priority_queue<pi, vector<pi>, greater<pi>> pq;
+        pq.push({0, s});
+        while (!pq.empty()) {
+            CT dis; int u;
+            tie(dis, u) = pq.top(); pq.pop();
+            if (trk[u])
+                continue;
+            trk[u] = true;
+            for (int i: g[u]) {
+                int v = e[i].u ^ e[i].v ^ u;
+                if (d[v] > d[u] + e[i].cost) {
+                    d[v] = d[u] + e[i].cost;
+                    pq.push({d[v], v});
+                }
             }
         }
+        return d;
     }
-    return d;
-}
+};
 // SNIPPETS_END

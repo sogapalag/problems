@@ -4,10 +4,12 @@ using namespace std;
 
 // SNIPPETS_START graph_bridge
 struct Graph {
+    using CT = int; static const CT INF = 0x3f3f3f3f;
+    //using CT = long long; static const CT INF = 0x3f3f3f3f3f3f3f3f;
     struct Edge {
         int u, v;
-        int cost;
-        Edge(int _u, int _v, int _cost) : u(_u), v(_v), cost(_cost) {}
+        CT cost;
+        Edge(int _u, int _v, CT _cost) : u(_u), v(_v), cost(_cost) {}
     };
     int n, m;
     bool is_digraph;
@@ -31,7 +33,7 @@ struct Graph {
         pos = vector<int>(n, 0);
         is_digraph = _di;
     }
-    inline void add(int u, int v, int cost=1) {
+    inline void add(int u, int v, CT cost=1) {
         assert(0 <= u && u < n);
         assert(0 <= v && v < n);
         if (is_digraph) {
@@ -61,7 +63,7 @@ struct Graph {
     vector<int> bg;
     void dfs(int u, int p=-1) {
         low[u] = bg[u] = tim++;
-        for (; pos[u] < g[u].size(); pos[u]++) {
+        for (; pos[u] < (int)g[u].size(); pos[u]++) {
             int i = g[u][pos[u]];
             if (p == i) continue; // for un-di, not use same edge. note, can multi-edge
             int v = e[i].u ^ e[i].v ^ u;
@@ -76,14 +78,13 @@ struct Graph {
             }
         }
     }
-    void dfs_all();
-};
-void Graph::dfs_all() {
-    tim = 1;
-    low.assign(n, 0);
-    bg.assign(n, 0);
-    for (int i = 0; i < n; i++) {
-        if (!bg[i]) dfs(i);
+    void dfs_all() {
+        tim = 1;
+        low.assign(n, 0);
+        bg.assign(n, 0);
+        for (int i = 0; i < n; i++) {
+            if (!bg[i]) dfs(i);
+        }
     }
-}
+};
 // SNIPPETS_END

@@ -5,10 +5,12 @@ using namespace std;
 
 // SNIPPETS_START graph
 struct Graph {
+    using CT = int; static const CT INF = 0x3f3f3f3f;
+    //using CT = long long; static const CT INF = 0x3f3f3f3f3f3f3f3f;
     struct Edge {
         int u, v;
-        int cost;
-        Edge(int _u, int _v, int _cost) : u(_u), v(_v), cost(_cost) {}
+        CT cost;
+        Edge(int _u, int _v, CT _cost) : u(_u), v(_v), cost(_cost) {}
     };
     int n, m;
     bool is_digraph;
@@ -31,7 +33,7 @@ struct Graph {
         pos = vector<int>(n, 0);
         is_digraph = _di;
     }
-    inline void add(int u, int v, int cost=1) {
+    inline void add(int u, int v, CT cost=1) {
         assert(0 <= u && u < n);
         assert(0 <= v && v < n);
         if (is_digraph) {
@@ -47,16 +49,16 @@ struct Graph {
         m++;
     }
     void input() {
-        int u, v;
+        int u, v; CT c;
         for (int i = 0; i < m; i++) {
-            cin >> u >> v;
+            cin >> u >> v >> c;
             u--; v--; // input 1-based
-            add(u, v);
+            add(u, v, c);
         }
     }
     vector<int> pos;
     void dfs(int u) {
-        for (; pos[u] < g[u].size(); pos[u]++) {
+        for (; pos[u] < (int)g[u].size(); pos[u]++) {
             int i = g[u][pos[u]];
             int v = e[i].u ^ e[i].v ^ u;
             // rule

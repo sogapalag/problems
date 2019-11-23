@@ -5,10 +5,12 @@ using namespace std;
 // SNIPPETS_START graph_centroid_decomp
 // for tree use
 struct Graph {
+    using CT = int; static const CT INF = 0x3f3f3f3f;
+    //using CT = long long; static const CT INF = 0x3f3f3f3f3f3f3f3f;
     struct Edge {
         int u, v;
-        int cost;
-        Edge(int _u, int _v, int _cost) : u(_u), v(_v), cost(_cost) {}
+        CT cost;
+        Edge(int _u, int _v, CT _cost) : u(_u), v(_v), cost(_cost) {}
     };
     int n, m;
     bool is_digraph;
@@ -28,7 +30,7 @@ struct Graph {
         set_di(_di);
         input(_m);
     }
-    inline void add(int u, int v, int cost=1) {
+    inline void add(int u, int v, CT cost=1) {
         assert(0 <= u && u < n);
         assert(0 <= v && v < n);
         if (is_digraph) {
