@@ -69,7 +69,12 @@ typedef modular<int> mint;
 // now for n*m. note coprime T, demand us each second full-cover.
 // 2^n : each row all stay/toR
 // 2^m : each col all stay/toD
-// 2^(gcd(n,m)) : for squar g*g, any row/col RD..RDD can deduce other (flip)pattern, since each second need to fill void.
+// 2^(gcd(n,m)) : for squar g*g, any row/col RD..RDD can deduce other (shift)pattern, since each second need to fill void.
+//   e.g.
+//        ....
+//       [RD..R]
+//      [RD..R]
+//     [RD..R]
 // -3 : above dup.
 void solve() {
     int h,w,t;
