@@ -27,7 +27,7 @@ struct Graph {
         g.resize(n);
         e.reserve(_m);
         set_di(_di);
-        input();
+        input(_m);
     }
     void set_di(bool _di) {
         pos = vector<int>(n, 0);
@@ -48,9 +48,9 @@ struct Graph {
         e.emplace_back(u, v, cost);
         m++;
     }
-    void input() {
+    void input(int _m) {
         int u, v; CT c;
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < _m; i++) {
             cin >> u >> v >> c;
             u--; v--; // input 1-based
             add(u, v, c);
