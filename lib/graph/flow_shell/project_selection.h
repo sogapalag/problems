@@ -25,6 +25,7 @@ struct ProjectSelection {
     }
 
     // u dep on v: [0..n)
+    // i.e. u implies v
     void add_dep(int u, int v) {
         mc.add(u, v);
     }
