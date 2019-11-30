@@ -9,7 +9,6 @@ struct Bip {
     vector<int> left;
     vector<bool> trk;
 
-    Bip() {}
     Bip(int _n) : n(_n), m(_n) {
         init();
     }
