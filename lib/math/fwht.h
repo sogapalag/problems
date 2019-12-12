@@ -119,4 +119,6 @@ template <typename T=mint> inline Boly<T> operator*(const Boly<T>& a, const Boly
 template <typename T=mint> inline Boly<T> operator/(const Boly<T>& a, const Boly<T>& _b) { Boly<T> res(a); return res /= _b; }
 
 using boly=Boly<mint>;
+// when pow note H(A*....k) = HA....k
+// when convo multi, H(ABCD...) = HA HB HC HD...
 // SNIPPETS_END

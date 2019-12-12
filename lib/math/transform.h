@@ -200,6 +200,10 @@ inline void fast_superset_convolution_join(vector<T>& f, vector<T>& g) {
 #define _all_Zr get_all_ranked_subset_zeta_transform
 #define _dsum_convo fast_subset_convolution_direct_sum
 #define _disjoin_convo fast_subset_convolution_disjoin
+
+// when pow, note M(A*...e) = ZA...e
+// when convo multi, M(ABC...) = ZA ZB ZC...
+
 //template <typename Ring>
 //inline void generalized_fast_subset_zeta_transform(vector<Ring>& f, function<void(Ring&,Ring)> add_assign) {
 //}
