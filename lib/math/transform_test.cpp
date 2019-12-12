@@ -133,12 +133,152 @@ bool test_superset_mobius() {
     return true;
 }
 
+bool test_ranked() {
+    int n = 15;
+    const int MSK = 1<<n; 
+    vector<ll> a(MSK), b(MSK);
+    for (int i = 0; i < MSK; i++) {
+        a[i] = b[i] = rng();
+    }
+    fast_subset_zeta_transform(a);
+    auto B = get_all_ranked_subset_zeta_transform(b);
+    for (int m = 0; m < MSK; m++) {
+        int r = __builtin_popcount(m);
+        b[m] = 0;
+        for (int i = 0; i <= r; i++) {
+            b[m] += B[i][m];
+        }
+    }
+    for (int i = 0; i < MSK; i++) {
+        if (a[i]!=b[i]) return false;
+    }
+    return true;
+}
+
+bool test_subset_convolution() {
+    int n = 10;
+    const int MSK = 1<<n; 
+    const int LIM = 100005; 
+    vector<ll> a(MSK), b(MSK);
+    for (int i = 0; i < MSK; i++) {
+        a[i] = b[i] = rng()%LIM;
+    }
+    vector<ll> c(MSK), d(MSK);
+    for (int i = 0; i < MSK; i++) {
+        c[i] = d[i] = rng()%LIM;
+    }
+    clock_t x = clock();
+    fast_subset_convolution_direct_sum(a,c);
+    clock_t y = clock();
+    cerr << "fast convo: " << (double)(y-x) / CLOCKS_PER_SEC << endl;
+    x = clock();
+    naive_subset_convolution_direct_sum(b,d);
+    y = clock();
+    cerr << "naive convo: " << (double)(y-x) / CLOCKS_PER_SEC << endl;
+    for (int i = 0; i < MSK; i++) {
+        //cout << a[i] << ' '<<b[i] << "\n";
+        if (a[i]!=b[i]) return false;
+    }
+    return true;
+}
+
+bool test_disjoin() {
+    int n = 10;
+    const int MSK = 1<<n; 
+    const int LIM = 100005; 
+    vector<ll> a(MSK), b(MSK);
+    for (int i = 0; i < MSK; i++) {
+        a[i] = b[i] = rng()%LIM;
+    }
+    vector<ll> c(MSK), d(MSK);
+    for (int i = 0; i < MSK; i++) {
+        c[i] = d[i] = rng()%LIM;
+    }
+    fast_subset_convolution_disjoin(a,c);
+    fast_subset_convolution_disjoin(b,d);
+    for (int i = 0; i < MSK; i++) {
+        //cout << a[i] << ' '<<b[i] << "\n";
+        if (a[i]!=b[i]) return false;
+    }
+    return true;
+}
+bool test_point_disjoin() {
+    int n = 10;
+    const int MSK = 1<<n; 
+    const int LIM = 100005; 
+    vector<ll> a(MSK), b(MSK);
+    for (int i = 0; i < MSK; i++) {
+        a[i] = b[i] = rng()%LIM;
+    }
+    vector<ll> c(MSK), d(MSK);
+    for (int i = 0; i < MSK; i++) {
+        c[i] = d[i] = rng()%LIM;
+    }
+    fast_subset_convolution_disjoin(a,c);
+    int x = rng()%MSK; (x+=MSK)%=MSK;
+
+    return a[x] == get_point_value_subset_disjoin(b,d,x);
+}
+
+#include "fwht.h"
+bool test_or_fwht() {
+    int n = 10;
+    const int MSK = 1<<n; 
+    const int LIM = 100005; 
+    vector<ll> a(MSK);Boly<ll> b(MSK);
+    for (int i = 0; i < MSK; i++) {
+        a[i] = b[i] = rng()%LIM;
+    }
+    vector<ll> c(MSK);Boly<ll> d(MSK);
+    for (int i = 0; i < MSK; i++) {
+        c[i] = d[i] = rng()%LIM;
+    }
+    fast_subset_convolution_union(a, c);
+    or_fwht<ll>(b); or_fwht<ll>(d);
+    for (int i = 0; i < MSK; i++) {
+        b[i] *= d[i];
+    }
+    or_fwht(b, true);
+    for (int i = 0; i < MSK; i++) {
+        if (a[i] != b[i]) return false;
+    }
+    return true;
+}
+
+bool test_and_fwht() {
+    int n = 10;
+    const int MSK = 1<<n; 
+    const int LIM = 100005; 
+    vector<ll> a(MSK);Boly<ll> b(MSK);
+    for (int i = 0; i < MSK; i++) {
+        a[i] = b[i] = rng()%LIM;
+    }
+    vector<ll> c(MSK);Boly<ll> d(MSK);
+    for (int i = 0; i < MSK; i++) {
+        c[i] = d[i] = rng()%LIM;
+    }
+    fast_superset_convolution_join(a, c);
+    and_fwht<ll>(b); and_fwht<ll>(d);
+    for (int i = 0; i < MSK; i++) {
+        b[i] *= d[i];
+    }
+    and_fwht(b, true);
+    for (int i = 0; i < MSK; i++) {
+        if (a[i] != b[i]) return false;
+    }
+    return true;
+}
 
 void solve() {
     //assert(test_subset_zeta());
     assert(test_inv_subset_zeta());
     assert(test_superset_zeta());
     assert(test_inv_superset());
+    assert(test_ranked());
+    assert(test_subset_convolution());
+    assert(test_disjoin());
+    assert(test_or_fwht());
+    assert(test_and_fwht());
 }
 
 int main() {
