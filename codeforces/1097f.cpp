@@ -2,7 +2,6 @@
 
 using namespace std;
 
-// SNIPPETS_START sieve_st
 struct Sieve {
     int sz;
     vector<bool> is;
@@ -90,7 +89,6 @@ struct Sieve {
             res.emplace_back(x);
         return res;
     }
-    // Hint: if query many times, a slight fast formula by mobius: res = sum_{d|c} mu[d] * (m/d)
     // count [1..=m] coprime to c
     int coprime(int m, int c){
         int tmp = 0;
@@ -166,4 +164,62 @@ struct Sieve {
         return res;
     }
 };
-// SNIPPETS_END
+
+const int X = 7008; 
+using Bs=bitset<X>;
+
+Bs divs[X];
+Bs superset_mobius[X];
+
+void prep() {
+    for (int d = 1; d < X; d++) {
+        for (int n = d; n < X; n+=d) {
+            divs[n][d] = 1;
+        }
+    }
+    auto mu = Sieve(X).mobius_table(X);
+    for (int d = 1; d < X; d++) {
+        for (int k = 1; k*d < X; k++) {
+            // -1=1 (mod 2)
+            if (mu[k] != 0) superset_mobius[d][d*k] = 1;
+        }
+    }
+}
+
+// instead store x parity, store [x]:= #n s.t. x|n. i.e. a superset mobius transform under '|' as <
+void solve() {
+    prep();
+    int n,q;
+    cin >> n >> q;
+    vector<Bs> a(n);
+    while (q--) {
+        int op; cin >> op;
+        if (op == 1) {
+            int i,x;
+            cin >> i >> x; i--;
+            a[i] = divs[x];
+        }else if (op == 2) {
+            int i,j,k;
+            cin >> i >> j >> k;
+            i--;j--;k--;
+            a[i] = a[j]^a[k];
+        }else if (op == 3) {
+            int i,j,k;
+            cin >> i >> j >> k;
+            i--;j--;k--;
+            a[i] = a[j]&a[k];
+        }else if (op == 4) {
+            int i,x;
+            cin >> i >> x; i--;
+            int res = (a[i] & superset_mobius[x]).count();
+            cout << (res&1);
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    solve();
+    cout << endl;
+}

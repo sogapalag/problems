@@ -1,8 +1,6 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-
-// SNIPPETS_START sieve_st
 struct Sieve {
     int sz;
     vector<bool> is;
@@ -90,11 +88,10 @@ struct Sieve {
             res.emplace_back(x);
         return res;
     }
-    // Hint: if query many times, a slight fast formula by mobius: res = sum_{d|c} mu[d] * (m/d)
     // count [1..=m] coprime to c
-    int coprime(int m, int c){
+    int coprime(int m, const vector<int>& di){
         int tmp = 0;
-        auto di = p_divs(c);
+        //auto di = p_divs(c);
         int sz = di.size();
         for (int msk = 1; msk < (1<<sz); msk++) {
             int prod = 1;
@@ -166,4 +163,65 @@ struct Sieve {
         return res;
     }
 };
-// SNIPPETS_END
+// when range [l, r), has property notP~P, want first P.
+// when return r, means not found.
+template <typename T>
+T bs_first(T l, T r, function<bool (T)> f) {
+    assert(l < r);
+    T mid;
+    while (l != r) {
+        mid = l + (r-l)/2;
+        if (f(mid)) {
+            r = mid;
+        }else {
+            l = mid + 1;
+        }
+    }
+    return r;
+}
+const int N = 1e6+10; 
+Sieve s(N);
+
+// 2511 ms
+void solve() {
+    int x, p, k;
+    cin >> x >> p >> k;
+    auto pd = s.p_divs(p);
+    int has = s.coprime(x, pd);
+    // if larger r int64 would TLE
+    int res = bs_first<int>(x+1, 1e9, [&](int i){
+            return s.coprime(i, pd) >= has + k;
+            });
+    cout << res << "\n";
+}
+// 389 ms
+// there is another method compute coprime
+// first get divs(p)
+// then res = sum_d|p mu[d] * (n/d)
+vector<int8_t> mu = s.mobius_table(N);
+void solve2() {
+    int x, p, k;
+    cin >> x >> p >> k;
+    auto divs = s.divs(p);
+    // similar to 803f. f(p/d) = (n/d) = #d| g=(n, p). by apply mu (superset mobius inversion). get #d|g=1
+    auto coprime = [&](int n){
+        int res = 0;
+        for (int d: divs) {
+            res += mu[d] * (n/d);
+        }
+        return res;
+    };
+    int has = coprime(x);
+    int res = bs_first<int>(x+1, 1e9, [&](int i){
+            return coprime(i) >= has + k;
+            });
+    cout << res << "\n";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int t; cin >> t;
+    while(t--)solve2();
+    cout << endl;
+}
