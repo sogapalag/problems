@@ -160,7 +160,7 @@ inline T get_point_value_subset_disjoin(vector<T>& f, const vector<T>& g, int ms
     return get_point_value_subset_direct_sum(f, g, msk);
 }
 // (f*g)[X] := sum_{UuV=X} f[U]g[V]
-// aka. OR-convolution
+// aka. OR-convolution join
 template <typename T>
 inline void fast_subset_convolution_union(vector<T>& f, vector<T>& g) {
     fast_subset_zeta_transform(f);
@@ -172,9 +172,9 @@ inline void fast_subset_convolution_union(vector<T>& f, vector<T>& g) {
     fast_subset_mobius_transform(f);
 }
 // (f*g)[X] := sum_{UcV=X} f[U]g[V]
-// aka. AND-convolution
+// aka. AND-convolution meet
 template <typename T>
-inline void fast_superset_convolution_join(vector<T>& f, vector<T>& g) {
+inline void fast_superset_convolution_intersection(vector<T>& f, vector<T>& g) {
     fast_superset_zeta_transform(f);
     fast_superset_zeta_transform(g);
     int MSK = f.size();
@@ -192,7 +192,7 @@ inline void fast_superset_convolution_join(vector<T>& f, vector<T>& g) {
 #define _Zp fast_superset_zeta_transform
 #define _Mp fast_superset_mobius_transform
 #define _or_convo fast_subset_convolution_union
-#define _and_convo fast_superset_convolution_join
+#define _and_convo fast_superset_convolution_intersection
 #define _query_dsum get_point_value_subset_direct_sum
 #define _query_disjoin get_point_value_subset_disjoin
 #define _Zr fast_ranked_subset_zeta_transform
@@ -203,6 +203,7 @@ inline void fast_superset_convolution_join(vector<T>& f, vector<T>& g) {
 
 // when pow, note M(A*...e) = ZA...e
 // when convo multi, M(ABC...) = ZA ZB ZC...
+// Caution!!: for convolution, be careful overflow, &f should != &g (inplace modify)
 
 //template <typename Ring>
 //inline void generalized_fast_subset_zeta_transform(vector<Ring>& f, function<void(Ring&,Ring)> add_assign) {

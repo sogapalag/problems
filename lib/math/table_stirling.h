@@ -42,3 +42,14 @@ vector<mint> rise_table(int x, int n) {
     return res;
 }
 // SNIPPETS_END
+
+// by wiki
+//mint stir2(int n, int k) {
+//    mint sum = 0;
+//    int sign = 1;
+//    for (int i = 0; i <= k; i++) {
+//        sum += sign * c.c(k,i) * mint(k-i).exp(n);
+//        sign *= -1;
+//    }
+//    return sum * c.ifac[k];
+//}

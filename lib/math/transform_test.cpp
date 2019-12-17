@@ -257,7 +257,7 @@ bool test_and_fwht() {
     for (int i = 0; i < MSK; i++) {
         c[i] = d[i] = rng()%LIM;
     }
-    fast_superset_convolution_join(a, c);
+    fast_superset_convolution_intersection(a, c);
     and_fwht<ll>(b); and_fwht<ll>(d);
     for (int i = 0; i < MSK; i++) {
         b[i] *= d[i];
