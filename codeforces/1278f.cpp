@@ -2,7 +2,7 @@
 
 using namespace std;
 
-const int MOD = 1000000007; // 998244353
+const int MOD = 998244353; // 998244853;
 
 template <typename T>
 struct modular {
@@ -65,49 +65,68 @@ template <typename T, typename U> inline bool operator!=(const modular<T>& _lhs,
 template <typename T, typename U> inline bool operator!=(const U& _lhs, const modular<T>& _rhs) { return !(_lhs == _rhs); }
 typedef modular<int> mint;
 
-const int N = 5003; 
-mint stir[N][N]; // stirling 2nd; {k i}
-mint fall[N];
-mint pwfa[N];
-
-// recall x^k = \sum_{i:0..=k} {k i} (x)_i
-// res = \sum_{i:0..=k} {k i} (n)_i 2^{n-i}
-//   update clear: sum_x C(n x) * (x)_i = sum_x C(n x) C(x i) i!
-//                                      = sum_x C(n i) C(n-i, x-i) i!
-//                                      = (n)_i sum_x C(n-i, x-i)
-//                                      = (n)_i 2^(n-i)
-//   illustartion: original, sum C(n x) x^k means we choose x letters from n as alphabet, [x]. then write a string/tuple length k.
-//          RHS:= consider a specific string, distrbute it to i distinct letters/set, i.e. {k i}.
-//                 then [i] can be C(n i) i! = (n)_i. then rest n-i can arbitrary. so 2^(n-i)
-//
-//
-//   same problem: cf 1278f
-//
-// another method, let p = x d/dx.
-// res = p^k(S)|_x=0
-void solve() {
-    int n, k;
-    cin >> n >> k;
-    stir[1][0] = 0; stir[1][1] = 1;
-    for (int i = 2; i <= k; i++) {
-        stir[i][0] = 0;
+// [n k]: n into k cycles 
+vector<vector<mint>> stir_first(int n) {
+    vector<vector<mint>> stir(n+1, vector<mint>(n+1, 0));
+    stir[0][0] = 1;
+    for (int i = 1; i <= n; i++) {
         for (int j = 1; j <= i; j++) {
-            stir[i][j] = j*stir[i-1][j] + stir[i-1][j-1];
+            stir[i][j] = stir[i-1][j-1] + stir[i-1][j]*(i-1);
         }
     }
-    fall[0] = 1; fall[1] = n;
-    for (int i = 2; i <= k; i++) {
-        fall[i] = fall[i-1] * (n-i+1);
+    return stir;
+}
+// {n k}: n into k sets
+vector<vector<mint>> stir_second(int n) {
+    vector<vector<mint>> stir(n+1, vector<mint>(n+1, 0));
+    stir[0][0] = 1;
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= i; j++) {
+            stir[i][j] = stir[i-1][j-1] + stir[i-1][j]*j;
+        }
     }
-    pwfa[0] = mint(2).exp(n);
-    mint half = 1/mint(2);
-    for (int i = 1; i <= k; i++) {
-        pwfa[i] = pwfa[i-1] * half;
+    return stir;
+}
+// using, x^n = sum_{k:0..=n} {n k} (x)_k
+// (x)_n := x*(x-1)...(x-n+1)
+vector<mint> fall_table(int x, int n) {
+    vector<mint> res(n+1);
+    res[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        res[i] = res[i-1] * (x-i+1);
     }
-
+    return res;
+}
+vector<mint> rise_table(int x, int n) {
+    vector<mint> res(n+1);
+    res[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        res[i] = res[i-1] * (x+i-1);
+    }
+    return res;
+}
+vector<mint> power_table(mint x, int n) {
+    vector<mint> pw(n+1);
+    pw[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        pw[i] = pw[i-1] * x;
+    }
+    return pw;
+}
+// recall cf 932e. 
+//  sum {k i}  (n)_i sum (n-i x-i)p^xq^{n-x}
+//    second sum = p^i (p+q)^{n-i} = p^i
+//
+// still can use quick illustration, i distinct letter/group/set, (n i)i!* (prob=p^i), remain n-i,prob=1
+void solve() {
+    int n,m,k;
+    cin >> n >> m >> k;
+    auto fall = fall_table(n, k);
+    auto pw = power_table(mint(1)/m, k);
+    auto stir = stir_second(k);
     mint res = 0;
-    for (int i = 0; i <= k; i++) {
-        res += stir[k][i] * fall[i] * pwfa[i];
+    for (int i = 0; i <= k && i <= n; i++) {
+        res += stir[k][i] * fall[i] * pw[i];
     }
     cout << res;
 }
