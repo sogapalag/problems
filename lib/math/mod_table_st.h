@@ -39,6 +39,7 @@ struct Comb {
     }
     // sum x = s, x > 0
     mint p(int s, int k) {
+        if (s==0&&k==0)return 1;
         return c(s-1, k-1);
     }
     // sum x = s, x >= 0

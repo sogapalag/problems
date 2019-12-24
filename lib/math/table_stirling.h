@@ -41,6 +41,14 @@ vector<mint> rise_table(int x, int n) {
     }
     return res;
 }
+vector<mint> power_table(mint x, int n) {
+    vector<mint> pw(n+1);
+    pw[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        pw[i] = pw[i-1] * x;
+    }
+    return pw;
+}
 // SNIPPETS_END
 
 // by wiki
