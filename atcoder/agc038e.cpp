@@ -118,6 +118,8 @@ mint dp[N][N];
 // prob = (sb, ..b..) prod.. (x/sa)^b = sb!/sa^sb prod x^b/b!.
 // exp = 1/(sa/S) = S/sa
 // so maintain dp as sum of prod x^b/b!
+//
+// tag: generalized coupon collector problem.
 void solve() {
     int n; cin >> n;
     vector<int> a(n), b(n);
