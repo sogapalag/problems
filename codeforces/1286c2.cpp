@@ -73,7 +73,7 @@ void solve() {
         if (i*2==n) continue;
         // key part, diff is s[i...n-i)
         auto c = cnt[i+1] - cnt[i];
-        for (int k = pos; k >= i; k--) {
+        for (int k = pos-1; k >= i; k--) {
             c[res[k]-'a']--;
         }
         for (int _ = 0; _ < 26; _++) {
