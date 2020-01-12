@@ -9,7 +9,9 @@ def to_snippets(addr, to="./out.conf"):
                 flag = False
                 while True:
                     line = rf.readline()
-                    # ~ print(line)
+                    print(line)
+                    if not line:
+                        break
                     if not flag:
                         if st not in line:
                             continue;
@@ -24,7 +26,7 @@ def to_snippets(addr, to="./out.conf"):
         print("read file not found");
 
 def main():
-    addr = "./templates/kstmp.cpp"
+    addr = "./centroid_decomposition_automaton.h"
     to_snippets(addr)
 
 if __name__ == "__main__":

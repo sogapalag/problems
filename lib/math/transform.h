@@ -13,6 +13,9 @@ using namespace std;
 //    0x100000, 0x200000, 0x400000, 0x800000,
 //    0x1000000,0x2000000,0x4000000,0x8000000,
 //};
+
+
+// SNIPPETS_START transform_set
 // O(3^n)
 template <typename T>
 inline vector<T> naive_subset_zeta_transform(vector<T>& f) {
@@ -208,4 +211,4 @@ inline void fast_superset_convolution_intersection(vector<T>& f, vector<T>& g) {
 //template <typename Ring>
 //inline void generalized_fast_subset_zeta_transform(vector<Ring>& f, function<void(Ring&,Ring)> add_assign) {
 //}
-
+// SNIPPETS_END

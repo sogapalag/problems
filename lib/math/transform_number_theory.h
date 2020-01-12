@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// SNIPPETS_START transform_number_theory
 #define __up_loop(f) \
     for (int n = f.size(), i = 1; i < n; i++)\
         for (int j = i; (j += i) < n;)
@@ -59,3 +60,4 @@ inline void convolution_gcd(vector<T>& f, vector<T>& g) {
     mobius_p(f);
 }
 // Caution!! for convolution, watch out overflow, inplace that &f should != &g
+// SNIPPETS_END
