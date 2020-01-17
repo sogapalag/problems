@@ -53,7 +53,7 @@ struct Kruskal {
         es.push_back(e);
     }
     inline void add(const vector<Edge>& _es) {
-        for (auto& e: es) {
+        for (auto& e: _es) {
             es.push_back(e);
         }
     }
