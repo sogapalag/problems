@@ -1,8 +1,8 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-//~ SNIPPETS_START modular_sim
-const int MOD = 1000000007; // 998244353;  998244853; 
+// SNIPPETS_START modular_sim
+const int MOD = 1000000007; // 998244353; // 998244853; 
 
 template <typename T>
 struct modular {
@@ -64,4 +64,4 @@ template <typename T> inline bool operator!=(const modular<T>& _lhs, const modul
 template <typename T, typename U> inline bool operator!=(const modular<T>& _lhs, const U& _rhs) { return !(_lhs == _rhs); }
 template <typename T, typename U> inline bool operator!=(const U& _lhs, const modular<T>& _rhs) { return !(_lhs == _rhs); }
 typedef modular<int> mint;
-//~ SNIPPETS_END
+// SNIPPETS_END
