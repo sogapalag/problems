@@ -1,81 +1,51 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-
-/////////////////////////////////
-// root is 1, perfect tree; hint: n is not power of 2 also right.
-// raw data(leaf) in a[n,...2*n)
-// i: parent; 2*i, 2*i+1 children.
-//
-// classic update-one, query range
-
 // SNIPPETS_START segtree
-template <typename T=int>
-struct Segtree {
-    int n; // leaf [n, 2n), view as original [0, n)
-    int sz_v;
-    const T ID;
-    vector<T> v; //tree
+template <typename M>
+struct SegTree {
+    using Op = function<M(const M&, const M&)>;
+    M ID; // monoid identity
+    Op op; // associative operation
+    int N; // 2^lg space, for non-commutative
+    vector<M> a;
     
-    Segtree(int _n = 100005) : n(_n), sz_v(n<<1), ID() {
-        v.resize(sz_v);
-    }
-    void init() {// set leaf value
-        for (int i = 0; i < n; i++) {
-            // v[i+n] = raw[i];
-        }
+    SegTree(int n, M leaf_default, M _ID, Op _op) : ID(_ID), op(_op) {
+        init_space(n);
+        fill(a.begin() + N, a.begin() + N + n, leaf_default);
         build();
     }
-    void build() {
-        for (int i = n-1; i > 0; i--) {
-            v[i] = v[i<<1] + v[i<<1|1];
-        }
+    SegTree(const vector<M> leaves, M _ID, Op _op) : ID(_ID), op(_op) {
+        int n = leaves.size();
+        init_space(n);
+        copy(leaves.begin(), leaves.end(), a.begin() + N);
+        build();
     }
-    inline void update(int p, T val) {
-        assert(p>=0);
-        for (v[p += n] = val; p >>= 1;) {
-            v[p] = v[p<<1] + v[p<<1|1];
-        }
+    void init_space(int n) {
+        N = 1; while (N < n) N <<= 1;
+        a.assign(N<<1, ID);
     }
-    inline T query(int l, int r) {
-        T resl(ID), resr(ID);
-        for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
-            if (l & 1) { resl = resl + v[l++]; }
-            if (r & 1) { resr = v[--r] + resr; }
-        }
-        return resl + resr;
-    }
-    // Note only when range-assign, single-access not interfere. e.g max
-    //inline void update(int l, int r, T val) {
-    //    for (l += n, r += n; l < r; l >>= 1, r >>= 1){
-    //        if (l & 1) { v[l++] = val; }
-    //        if (r & 1) { v[--r] = val; }
-    //    }
-    //}
-    //inline T query(int p){
-    //    T res(ID);
-    //    for (p += n; p > 0; p >>= 1) { res += v[p]; }
-    //    return res;
-    //}
-};
+    inline void pull(int i) { a[i] = op(a[i<<1], a[i<<1|1]); }
+    void build() { for (int i = N-1; i >= 1; i--) pull(i); }
 
-struct Node {// monoid
-    int x;
-    Node() : x(-0x3f3f3f3f) {} // DO!! identity
-    Node(int _x) : x(_x) {}
-    Node(const Node& _r) : x(_r.x) {}// DO!! set
-    Node& operator = (const Node& _r) {// DO!! set
-        x = _r.x;
-        return *this;
+    void assign(int p, M val) {
+        assert(0 <= p && p < N);
+        for (a[p += N] = val; p >>= 1;) pull(p);
     }
-    Node& operator += (const Node& _r) {// DO!! may not communitative
-        x = max(x, _r.x);
-        return *this;
+    M query(int l, int r) const {
+        assert(0 <= l && r <= N);
+        M resl(ID), resr(ID);
+        for (l += N, r += N; l < r; l >>= 1, r >>= 1) {
+            if (l & 1) resl = op(resl, a[l++]);
+            if (r & 1) resr = op(a[--r], resr);
+        }
+        return op(resl, resr);
     }
-    friend Node operator + (const Node& _lhs, const Node& _rhs) {
-        return Node(_lhs) += _rhs; // derive from +=
+    M query_point(int p) const { 
+        assert(0 <= p && p < N);
+        return a[p + N];
     }
+    M query_all() const { return a[1]; }
 };
-
-typedef Segtree<Node> Seg;
 // SNIPPETS_END

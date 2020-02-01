@@ -1,106 +1,97 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-//~ SNIPPETS_START seglazy
-template <typename T, typename U>
-struct Seglazy {
-    static const int H = 17; //20
-    static const int SZ = 1<<H;
-    int sz_v;
-    const T ID;  // identity
-    const U UN;  // not info
-    vector<T> v; // tree
-    vector<U> d; // lazy
+
+// SNIPPETS_START seglazy
+template <typename M, typename D>
+struct SegLazy {
+    using Op = function<M(const M&, const M&)>;
+    using D2M = function<void(M&, const D&)>;
+    using D2D = function<void(D&, const D&)>;
     
-    Seglazy() : sz_v(SZ<<1), ID(), UN(0), v(sz_v, 0), d(sz_v, 0) {
-        //v.resize(sz_v);
-        //d.resize(sz_v);
-    }
-    inline int len(int p) {
-        return 1 << (H + __builtin_clz(p) - 31);
-    }
-    void build(int p=1, int l=0, int r=SZ) {
-        if (l + 1 == r) {
-            //set leaf
-            return;
-        }
-        assert(l != r);
-        int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
-        build(pl, l, m);
-        build(pr, m, r);
-        v[p] = v[pl] + v[pr];
-    }
-    inline void apply(int p) {// do!! use info, may need length, pass l, r in
-        v[p] += d[p] * len(p); // .x
-    }
-    inline void store(int p, const U& val) {// do!! store info, careful!! info chain
-        d[p] += val;
-    }
-    inline void push(int p) {
-        apply(p);
-        if (p < SZ) {
-            store(p<<1, d[p]);
-            store(p<<1|1, d[p]);
-        }
-        d[p] = UN;
-    }
-    void update(int _l, int _r, const U& val, int p=1, int l=0, int r=SZ) {
-        if (d[p] != UN) push(p);
-        if (_r <= l || r <= _l) return;
-        if (_l <= l && r <= _r) { // update by info
-            store(p, val);
-            push(p);
-            return;
-        }
-        int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
-        update(_l, _r, val, pl, l, m);
-        update(_l, _r, val, pr, m, r);
-        v[p] = v[pl] + v[pr];
-    }
-    T query(int _l, int _r, int p=1, int l=0, int r=SZ) {
-        if (d[p] != UN) push(p);
-        if (_r <= l || r <= _l) { return ID; }
-        if (_l <= l && r <= _r) { return v[p]; }
-        int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
-        return query(_l, _r, pl, l, m) + query(_l, _r, pr, m, r);
-    }    
-};
+    M ID;
+    D UN;
+    Op op;
+    D2M d2m;
+    D2D d2d;
 
-
-struct Node {// monoid
-    int x;
+    int N, L;
+    vector<M> a; // tree
+    vector<D> d; // lazy
     
-    Node() : x(-0x3f3f3f3f) {} // write your own identity
-    Node(int _x) : x(_x) {}
-    Node(const Node& _r) : x(_r.x) {}// write your own
-    Node& operator = (const Node& _r) {
-        x = _r.x; // write your own
-        return *this;
+    SegLazy(int n, M leaf_default, M _ID, D _UN, Op _op, D2M _d2m, D2D _d2d) : 
+        ID(_ID), UN(_UN), op(_op), d2m(_d2m), d2d(_d2d)
+    {
+        init_space(n);
+        fill(a.begin() + N, a.begin() + N + n, leaf_default);
+        build();
     }
-    Node& operator += (const Node& _r) {
-        x = max(x, _r.x); // write your own  !! may not communitative
-        return *this;
+    SegLazy(const vector<M>& leaves, M _ID, D _UN, Op _op, D2M _d2m, D2D _d2d) : 
+        ID(_ID), UN(_UN), op(_op), d2m(_d2m), d2d(_d2d)
+    {
+        int n = leaves.size();
+        init_space(n);
+        copy(leaves.begin(), leaves.end(), a.begin() + N);
+        build();
     }
-    friend Node operator + (const Node& _lhs, const Node& _rhs) {
-        return Node(_lhs) += _rhs; // derive from +=
+    void init_space(int n) {
+        N = 1; L = 0; while (N < n) N <<= 1, L++;
+        a.assign(N<<1, ID);
+        d.assign(N, UN);
     }
+    inline void pull(int i) { a[i] = op(a[i<<1], a[i<<1|1]); }
+    void build() { for (int i = N-1; i >= 1; i--) pull(i); }
+    inline int len(int i) {
+        return 1 << (L + __builtin_clz(i) - 31);
+    }
+    inline void apply(int i, const D& dval) {
+        d2m(a[i], dval);
+        if (i < N) d2d(d[i], dval);
+    }
+    inline void push(int i) {
+        apply(i<<1, d[i]);
+        apply(i<<1|1, d[i]);
+        d[i] = UN;
+    }
+    void update(int l, int r, const D& dval, int i, int sl, int sr) {
+        if (r <= sl || sr <= l) return;
+        if (l <= sl && sr <= r) return apply(i, dval);
+        int sm = (sl+sr)>>1, il = i<<1, ir = i<<1|1;
+        push(i);
+        update(l, r, dval, il, sl, sm);
+        update(l, r, dval, ir, sm, sr);
+        pull(i);
+    }
+    M query(int l, int r, int i, int sl, int sr) {
+        if (r <= sl || sr <= l) return ID;
+        if (l <= sl && sr <= r) return a[i];
+        push(i);
+        int sm = (sl+sr)>>1, il = i<<1, ir = i<<1|1;
+        return op(query(l, r, il, sl, sm), query(l, r, ir, sm, sr));
+    }
+
+    void update(int l, int r, const D& dval) { 
+        assert(0 <= l && r <= N);
+        update(l, r, dval, 1, 0, N);
+    }
+    void assign(int p, const M& x) {
+        assert(0 <= p && p < N);
+        p += N;
+        for (int k = L; k >= 1; k--) push(p >> k);
+        for (a[p] = x; p >>= 1; ) pull(p);
+
+    }
+    M query(int l, int r) {
+        assert(0 <= l && r <= N);
+        return query(l, r, 1, 0, N);
+    }
+    M query_point(int p) {
+        assert(0 <= p && p < N);
+        p += N;
+        for (int k = L; k >= 1; k--) push(p >> k);
+        return a[p];
+    }
+    M query_all() const { return a[1]; }
 };
-
-using Seg=Seglazy<Node, int>;
-//~ SNIPPETS_END
-
-
-const int MX = 1e5+5;
-int seg[MX<<2], lzy[MX<<2]; //memset
-void split(int _l, int _r, int val, int p=1, int l=0, int r=MX){
-    if (_r <= l || r <= _l) return;
-    if (_l <= l && r <= _r){
-        seg[p] += val;
-        lzy[p] += val;
-        return;
-    }
-    int m = (l+r)>>1, pl = p<<1, pr = p<<1|1;
-    split(_l, _r, val, pl, l, m);
-    split(_l, _r, val, pr, m, r);
-    seg[p] = max(seg[pl], seg[pr]) + lzy[p];
-}
+// SNIPPETS_END
