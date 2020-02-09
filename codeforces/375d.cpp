@@ -6,8 +6,9 @@ using ll=long long;
 
 struct Query {
     int l, r;
+    int k;
     Query() {}
-    Query(int _l, int _r) : l(_l), r(_r) {}
+    Query(int _l, int _r, int _k) : l(_l), r(_r), k(_k) {}
 };
 
 inline int64_t sqrt_ord(int l, int r) {
@@ -58,34 +59,53 @@ vector<int> reord(const vector<Query>& a, F f) {
 
 void solve() {
     int n,q;
+    cin >> n >> q;
     vector<int> a(n);
+    for (auto& x: a) {
+        cin >> x;
+    }
+    vector<vector<int>> g(n);
+    for (int _ = 1; _ < n; _++) {
+        int x,y;
+        cin >> x >> y;
+        x--;y--;
+        g[x].push_back(y);
+        g[y].push_back(x);
+    }
+    vector<int> sta(n),fin(n); int tim = 0;
+    function<void(int,int)> dfs = [&](int u, int p){
+        sta[u] = tim++;
+        for (int v: g[u])if(v!=p){
+            dfs(v, u);
+        }
+        fin[u] = tim;
+    };
+    dfs(0,-1);
     vector<Query> qry(q);
     for (int i = 0; i < q; i++) {
-        int l,r;
-        cin >> l >> r;
-        l--; // some case need to remove
-        qry[i] = {l,r};
+        int u,k;
+        cin >> u >> k; u--;
+        qry[i] = {sta[u], fin[u], k};
     }
-
-    ll sum = 0;
-    vector<int> cnt(1<<20, 0);
+const int N = 100005; 
+    // a should be tour l,r
+    auto b = a;
+    for (int i = 0; i < n; i++) {
+        a[sta[i]] = b[i];
+    }
+    vector<int> cnt(N, 0), hit_freq(N, 0);
     auto add_right = [&](int i){
-        sum += cnt[a[i]];
-        cnt[a[i]]++;
+        hit_freq[ ++cnt[a[i]] ] += 1;
     };
     auto rem_right = [&](int i){
-        cnt[a[i]]--;
-        sum -= cnt[a[i]];
+        hit_freq[ cnt[a[i]]-- ] -= 1;
     };
     auto add_left = [&](int i){
-        sum += cnt[a[i]];
-        cnt[a[i]]++;
+        hit_freq[ ++cnt[a[i]] ] += 1;
     };
     auto rem_left = [&](int i){
-        cnt[a[i]]--;
-        sum -= cnt[a[i]];
+        hit_freq[ cnt[a[i]]-- ] -= 1;
     };
-    // 0-based [l, r)
     int l = 0, r = 0;
     auto adjust_seg = [&](int L, int R){
         while (l > L) {
@@ -104,18 +124,18 @@ void solve() {
 
     vector<ll> res(q);
     for (int i: reord(qry, _sqrt_ord)) {
-        int L = qry[i].l, R = qry[i].r;
+        int L = qry[i].l, R = qry[i].r, k = qry[i].k;
         adjust_seg(L, R);
-        res[i] = sum;
+        res[i] = hit_freq[k];
     }
     for (auto& x: res) {
         cout << x << "\n";
     }
 }
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     solve();
-    cout << endl;
+    return 0;
 }
-

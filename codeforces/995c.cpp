@@ -17,6 +17,7 @@ ll absq(pnt& p) {
 }
 const ll LIM = 1500000ll * 1500000;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+// determ. method, omit note 3-ray(+-) => 6ray in circle, \E some <=60degree, i.e. <= radius
 void solve() {
     int n; cin >> n;
     vector<pnt> a(n);
