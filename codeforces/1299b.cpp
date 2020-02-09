@@ -3,6 +3,8 @@
 using namespace std;
 
 
+// no idea in time, just try central symmetry.
+// check editorial proof. omit.
 void solve() {
     int n; cin >> n;
     if (n&1) cout << "NO";

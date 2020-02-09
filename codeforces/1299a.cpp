@@ -4,6 +4,8 @@ using namespace std;
 
 
 // only 1 0 0..0 0 =>1
+// another method. note f = x&-y => F = x&-y&-z...&-. i.e. which put first matter.
+//    so can brute-force
 void solve() {
     int n; cin >> n;
     vector<int> a(n);

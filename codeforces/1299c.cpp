@@ -5,6 +5,8 @@ using ll=long long;
 using pl=pair<ll,ll>;
 #define sum first
 #define cnt second
+// it's easy to see we should pick min pref-avg to be a cut. but no idea to maintain, like segtree..
+// it's geom.. if note lexi a <=> lexi p, might easier
 // lower convex hull of (i,pref_sum)
 void solve() {
     int n; cin >> n;
