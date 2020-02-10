@@ -9,28 +9,26 @@ using namespace std;
 // SNIPPETS_START rmq
 template <typename T=int>
 struct Rmq {
-    vector<T> raw;
-    static const int LOG = 17; // 20;
-    int k;
-    int n;
-    vector<int> st[LOG];
-    Rmq(vector<T> _v) { // pass in vec[0, n)
-        raw = _v;
-        n = raw.size();
-        k = 32 - __builtin_clz(n);
-        for (int j = 0; j < k; j++) {
-            st[j].resize(n);
-        }
+    vector<T> a;
+    int n, L;
+    vector<vector<int>> st;
+    Rmq(vector<T> _a) : a(_a) { // pass in vec[0, n)
+        n = a.size();
         build();
     }
     inline int comp(int x, int y) { // DO! > max
-        return raw[x] < raw[y] ? x : y;
+        return a[x] < a[y] ? x : y;
     }
     void build() {
+        L = 32 - __builtin_clz(n);
+        st.resize(L);
+        for (int j = 0; j < L; j++) {
+            st[j].resize(n);
+        }
         for (int i = 0; i < n; i++) {
             st[0][i] = i;
         }
-        for (int j = 1; j < k; j++) {
+        for (int j = 1; j < L; j++) {
             for (int i = 0; i + (1<<j) <= n; i++) {
                 st[j][i] = comp(st[j-1][i], st[j-1][i + (1<<(j-1))]);
             }
@@ -43,7 +41,7 @@ struct Rmq {
         return comp(st[j][l], st[j][r - (1<<j)]);
     }
     inline T query(int l, int r) {
-        return raw[query_id(l, r)];
+        return a[query_id(l, r)];
     }
 };
 // SNIPPETS_END
