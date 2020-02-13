@@ -7,7 +7,7 @@ using ll=long long;
 //   i.e. 3it huffman coding
 void solve() {
     int n; cin >> n;
-    priority_queue<int, vector<int>, greater<int>> hp;
+    priority_queue<ll, vector<ll>, greater<ll>> hp;
     for (int _ = 0; _ < n; _++) {
         int x; cin >> x;
         hp.push(x);
@@ -17,9 +17,9 @@ void solve() {
     ll res = 0;
     while (hp.size() > 1) {
         assert(hp.size()>=3);
-        int x = hp.top(); hp.pop();
-        int y = hp.top(); hp.pop();
-        int z = hp.top(); hp.pop();
+        ll x = hp.top(); hp.pop();
+        ll y = hp.top(); hp.pop();
+        ll z = hp.top(); hp.pop();
         res += x+y+z;
         hp.push(x+y+z);
     }
