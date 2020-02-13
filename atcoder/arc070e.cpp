@@ -28,18 +28,18 @@ using ll=long long;
 
 // this problem is good. but there're not rigorous proof on web.
 // here are some key insight.
-// f(x) = dp[i][x], made of slop -i-1, -i,...-1,0,1,...i, i+1 seglines, // induction proof. or draw graph
+// f(x) = dp[i][x], made of slope -i-1, -i,...-1,0,1,...i, i+1 seglines, // induction proof. or draw graph
 // let L,R be each half turnning points.
-//  note L maintain slop <=0 , R's >= 0
+//  note L maintain slope <=0 , R's >= 0
 //
 // why shift?
 // note dp[i][x] = |z-x| + min_{x'~x} dp[i-1][x'], 
 //   where x'~x: neither x'+y' < x nor x+y < x' hold. thus min f_{i-1} in  [x-y', x+y]
 //   x+y wanna mini, only when in L's. so shift L -y.
 //     why res += top-z?. note res = c, i.e. L_top to R-top constant part.
-//       so pick x=L_top must be optimal, since |z-x| slop 1, while L's slop all >=1.
+//       so pick x=L_top must be optimal, since |z-x| slope 1, while L's slope all >=1.
 //     how to update? push z twice?
-//       note update is indeed + g(x)=|z-x|. it will make L'left slop -1 (abs+1), right +1(abs-1). R' all +1.
+//       note update is indeed + g(x)=|z-x|. it will make L'left slope -1 (abs+1), right +1(abs-1). R' all +1.
 //       i.e. new L.top moved into R.
 void solve() {
     int n; cin >> n;
