@@ -72,6 +72,15 @@ struct Tree {
         }
         return pa_up[0][u];
     }
+    int dist(int u, int v) {
+        return depth[u] + depth[v] - 2*depth[lca(u,v)];
+    }
+    int goup(int u, int step) {
+        for (int j = L; j >= 0; j--) {
+            if (step>>j&1) u = pa_up[j][u];
+        }
+        return u;
+    }
 
     void solve() {
     }
