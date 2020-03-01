@@ -92,7 +92,7 @@ struct Dsu {
 };
 // try guessing formula : n^{k-2} * prod sz
 //   by cayley's (1_[k])^{k-2}. trees
-//      then by quantity-reservation. since k-1 edge, E=2*(k-1), it's natural to multiply prod sz just =E.
+//      then by quantity-conservation. since k-1 edge, E=2*(k-1), it's natural to multiply prod sz just =E.
 // well, since we know the formula already, then we can give an easy inductive proof.
 //   consider edge(s1)-(s2) occurrence. := n^(k-3) * (P/(s1s2)*(s1+s2)) * s1*s2
 //                                       = n^(k-3) * P*(s1+s2)
