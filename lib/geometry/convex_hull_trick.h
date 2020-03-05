@@ -53,8 +53,12 @@ struct Convex {// max
     inline void add_line(T k, T b) {
         // k must be monotonic
         Line<T> ln(k, b);
+        // special case, otherwise intrinsic bug.
+        if (size() == 1 && ln.k == hull[0].k && ln.b >= hull[0].b) {
+            hull.pop_back();
+        }
         // if k inc. <= 0
-        while ((int) hull.size() > 1 && (ln - hull.back()).cross(ln - *(hull.rbegin()+1)) >= 0) {
+        while (size() > 1 && (ln - hull.back()).cross(ln - *(hull.rbegin()+1)) >= 0) {
             hull.pop_back();
         }
         hull.push_back(ln);
@@ -65,6 +69,12 @@ struct Convex {// max
                 return hull[i].eval(x) >= hull[i-1].eval(x);
                 });
         return hull[id].eval(x);
+    }
+    size_t size() const {
+        return hull.size();
+    }
+    bool empty() const {
+        return hull.empty();
     }
 };
 
