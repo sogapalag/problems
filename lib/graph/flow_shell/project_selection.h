@@ -33,6 +33,10 @@ struct ProjectSelection {
     F profit() {
         return positive - mc.flow();
     }
+    // A\{s} := s_achivable
+    bool chosen(int i) const {
+        return mc.d[i] != -1;
+    }
 };
 
 template <typename T=int>
