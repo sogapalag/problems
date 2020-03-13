@@ -1,10 +1,17 @@
+#include <bits/stdc++.h>
 
-//~ SNIPPETS_START dsu
+using namespace std;
+
+// SNIPPETS_START dsu
 struct Dsu {
     int n;
     vector<int> p;
     
-    Dsu(int _n) { n = _n; p.resize(n); init(); }
+    Dsu(int _n) : n(_n)
+        , p(n)
+    {
+        init();
+    }
     inline void init() {
         for (int i = 0; i < n; i++) {
             p[i] = i;
@@ -22,4 +29,4 @@ struct Dsu {
         return find(x) == find(y);
     }
 };
-//~ SNIPPETS_END
+// SNIPPETS_END

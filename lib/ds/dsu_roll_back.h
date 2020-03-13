@@ -11,7 +11,12 @@ struct Dsu {
     vector<int> r;
     vector<pi> histo;
 
-    Dsu(int _n) { n = _n; p.resize(n); r.resize(n); init(); }
+    Dsu(int _n) : n(_n)
+        , p(n)
+        , r(n)
+    {
+        init();
+    }
     inline void init() {
         for (int i = 0; i < n; i++) {
             p[i] = i;
