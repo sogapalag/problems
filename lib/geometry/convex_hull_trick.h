@@ -70,6 +70,14 @@ struct Convex {// max
                 });
         return hull[id].eval(x);
     }
+    // linear, replace with deque
+    //inline T linear_query(T x) {
+    //    while (hull.size() >= 2) {
+    //        if (hull[0].eval(x) <= hull[1].eval(x)) hull.pop_front();
+    //        else break;
+    //    }
+    //    return hull[0].eval(x);
+    //}
     size_t size() const {
         return hull.size();
     }
