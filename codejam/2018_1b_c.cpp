@@ -41,6 +41,7 @@ void solve() {
         a[0] -= T;
         // n(cycle-len) round
         for (int _ = 0; _ < n; _++) {
+            // not necessary topo, since only way push dept
             for (int i = 0; i < n; i++) {
                 ll x = a[i];
                 if (x < 0) {
