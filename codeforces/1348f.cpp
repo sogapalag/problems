@@ -43,8 +43,49 @@ void __solve() {
     pr(f(p));
 }
 
+template <typename T=int>
+struct Rmq {
+    vector<T> a;
+    int n, L;
+    vector<vector<int>> st;
+    Rmq(vector<T> _a) : a(_a) { // pass in vec[0, n)
+        n = a.size();
+        build();
+    }
+    inline int comp(int x, int y) { // DO! > max
+        return a[x] < a[y] ? x : y;
+    }
+    void build() {
+        L = 32 - __builtin_clz(n);
+        st.resize(L);
+        for (int j = 0; j < L; j++) {
+            st[j].resize(n);
+        }
+        for (int i = 0; i < n; i++) {
+            st[0][i] = i;
+        }
+        for (int j = 1; j < L; j++) {
+            for (int i = 0; i + (1<<j) <= n; i++) {
+                st[j][i] = comp(st[j-1][i], st[j-1][i + (1<<(j-1))]);
+            }
+        }
+    }
+    // [l, r)
+    inline int query_id(int l, int r) {
+        assert(0 <= l && l < r && r <= n);
+        int j = 31 - __builtin_clz(r - l);
+        return comp(st[j][l], st[j][r - (1<<j)]);
+    }
+    inline T query(int l, int r) {
+        return a[query_id(l, r)];
+    }
+};
+
 // note greedy sweep must be a valid. i.e. pick min(r)
-// then if not unique, must exist a swap-adj
+// WA //then if not unique, must exist a swap-adj
+// for each x find if exist y(>x) s.t. li <= y <= ri, lj <= x <= rj
+//   =>   x < y <= ri,  lj <= x
+// so rmi(left[x]), check lj(y)<=x or not
 void solve() {
     int n; cin >> n;
     vector<pair<int, int>> a(n);
@@ -76,13 +117,33 @@ void solve() {
             cout << x+1 << ' ';
         }cout << '\n';
     };
-    for (int _ = 1; _ < n; _++) {
-        int i = p[_-1], j = p[_];
-        if (a[i].l <= _ && _ <= a[i].r
-                && a[j].l <= _-1 && _-1 <= a[j].r) {
+    // WA
+    // 3
+    // 1 3
+    // 2 2
+    // 1 3
+    //for (int _ = 1; _ < n; _++) {
+    //    int i = p[_-1], j = p[_];
+    //    if (a[i].l <= _ && _ <= a[i].r
+    //            && a[j].l <= _-1 && _-1 <= a[j].r) {
+    //        cout << "NO\n";
+    //        pr(f(p));
+    //        swap(p[_-1], p[_]);
+    //        pr(f(p)); return;
+    //    }
+    //}
+
+    vector<int> left(n);
+    for (int x = 0; x < n; x++) {
+        left[x] = a[p[x]].l;
+    }
+    Rmq<> rmi(left);
+    for (int x = 0; x < n-1; x++) {
+        int i = p[x];
+        if (x<a[i].r && rmi.query(x+1, a[i].r+1) <= x) {
             cout << "NO\n";
             pr(f(p));
-            swap(p[_-1], p[_]);
+            swap(p[x], p[ rmi.query_id(x+1, a[i].r+1) ]);
             pr(f(p)); return;
         }
     }
