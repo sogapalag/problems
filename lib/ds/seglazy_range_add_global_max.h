@@ -35,6 +35,7 @@ struct RangeAddGlobalMax {
         if (i < N) d[i] += val;
     }
     inline void push(int i) {
+        if (d[i]==0) return; // 2xfaster
         apply(i<<1, d[i]);
         apply(i<<1|1, d[i]);
         d[i] = 0;

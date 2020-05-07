@@ -50,6 +50,7 @@ struct SegLazy {
         if (i < N) d2d(d[i], dval);
     }
     inline void push(int i) {
+        if (d[i]==UN) return; // 2xfaster
         apply(i<<1, d[i]);
         apply(i<<1|1, d[i]);
         d[i] = UN;
