@@ -2,8 +2,10 @@
 
 using namespace std;
 
-// basic fact, <=n different palin.
-// tr forms two tree(even/odd)
+// basic fact:
+//   #different palin <= n
+//   tr forms two tree(even/odd)
+//   fail form a tree (rooted at 0, ignore -1)
 //
 // build-view:
 //             i
