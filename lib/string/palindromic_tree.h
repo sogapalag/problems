@@ -4,6 +4,11 @@ using namespace std;
 
 // basic fact, <=n different palin.
 // tr forms two tree(even/odd)
+//
+// build-view:
+//             i
+//   c[      u]c
+//      c[   v]
 
 // len:= max-len end with Ptr u, [      u]
 // cnt:= #palin end with u, in above string
