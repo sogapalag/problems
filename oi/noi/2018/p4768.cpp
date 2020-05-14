@@ -1,147 +1,93 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-#define LOCAL
-string to_string(string s) { return '"' + s + '"'; }
-string to_string(bool x) { return (x ? "T" : "F"); }
-string to_string(const char* s) { return to_string((string)s); }
-template <typename A, typename B>
-string to_string(pair<A, B> p) { return "(" + to_string(p.first) + ", " + to_string(p.second) + ")"; }
-template <typename V>
-string to_string(V v) {
-    bool f = true; string res = "[";
-    for (const auto& x: v) {
-        if (!f) res += ", ";
-        f = false;
-        res += to_string(x); } res += "]";
-    return res;
-}
-void debug() { cerr << endl; }
-template <typename H, typename... T>
-void debug(H h, T... t) { cerr << " " << to_string(h); debug(t...); }
-#ifdef LOCAL
-#define dbg(args...) cerr<<"("<<#args<<") =", debug(args)
-#else
-#define dbg(args...) 2020
-#endif
 
+const int S = 2e7; 
+int ch[2][S], pa[S], rk[S], a[S];
+// time: O(m L^2 a(n))
+// space: exactly S = 2N + 2*(#successful-join)*(L+1)
 struct PersistentDsu {
-#define sm (sl+(sr-sl)/2)
-#define cl tr[v].ch[0]
-#define cr tr[v].ch[1]
-#define pa tr[v].p
-#define rk tr[v].r
     using Ptr = int;
     using Index = int;
-    int n;
-    int* a;
-    struct Node {
-        Ptr ch[2] = {};
-        Index p;
-        int r = 0; // here rank=depth, one can modify to size.
-        int val;
-    };
-    vector<Node> tr;
-    PersistentDsu(int _n, int m, int* _a) : n(_n), a(_a) {
-        tr.reserve(2*n + m*64 + 1024); // (2n + mlogn)
-        // upd, upd1
-        cn();
-        build(0, n);
+    int n, L, N;
+    //vector<Ptr> ch[2];
+    //vector<Index> pa;
+    //vector<int> rk;
+    int* raw;
+    //vector<int> a;
+    Ptr vc = 1;
+    PersistentDsu(int _n, int* _r) : n(_n), raw(_r) {
+        L = 1; N = 2;
+        while (N < n) ++L, N <<= 1;
+        //int S = 2*N + 2*n*(L+1);
+        //ch[0].resize(S);
+        //ch[1].resize(S);
+        //pa.resize(S);
+        //rk.resize(S);
+        //a.resize(S);
+        build();
     }
-    Ptr vc = 0;
-    inline Ptr cn() {
-        tr.emplace_back();
-        return vc++;
-    }
-    inline Ptr cp(Ptr i) {
-        tr.push_back(tr[i]); // not safe
-        return vc++;
-    }
-    Ptr build(Index sl, Index sr) {
-        auto v = cn();
-        if (sr-sl == 1) { 
-            pa = sl;
-            tr[v].val = a[sl];
-            return v;
+    void build() {
+        for (int i = 2*N-1; i >= N; i--) {
+            pa[i] = i-N;
+            if (i<n+N) a[i] = raw[i-N];
         }
-        cl = build(sl, sm);
-        cr = build(sm, sr);
+        for (int i = N-1; i >= 1; i--) {
+            ch[0][i] = i<<1;
+            ch[1][i] = i<<1|1;
+        }
+        vc = 2*N;
+    }
+    Ptr find_ptr(Ptr v, Index x) {
+        for (int i = L-1; i >= 0; i--) {
+            v = ch[x>>i&1][v];
+        }
         return v;
     }
-    // pa[x] = p
-    Ptr update(Ptr pv, Index x, Index p, Index sl, Index sr) {
-        auto v = cp(pv);
-        if (sr-sl == 1) {
-            pa = p;
-            return v;
+    // pa[x]=p
+    Ptr update(Ptr v, Index x, Index p) {
+        for (int i = L-1; i >= 0; i--) {
+            int b = x>>i&1;
+            ch[b^1][vc] = ch[b^1][v];
+            ch[b][vc] = vc+1; ++vc;
+            v = ch[b][v];
         }
-        x < sm ? cl = update(cl,x,p,sl,sm) : cr = update(cr,x,p,sm,sr);
-        return v;
+        pa[vc] = p;
+        rk[vc] = rk[v];
+        // any more info here.
+        a[vc] = a[v];
+        return vc++ - L;
     }
-    // find v c-to x, i.e. store info pa[x], since we might other info
-    Ptr query(Ptr v, Index x, Index sl, Index sr) {
-        if (sr-sl == 1) return v;
-        return x < sm ? query(cl,x,sl,sm) : query(cr,x,sm,sr);
-    }
-    // ++rk[x] of version-v
-    // Warning: changed pv too. might TLE if reset. might need update-style
-    void add(Ptr v, Index x, Index sl, Index sr) {
-        if (sr-sl == 1) {
-            ++rk; return;
-        }
-        x < sm ? add(cl,x,sl,sm) : add(cr,x,sm,sr);
-    }
-    
-    Ptr update1(Ptr pv, Index x, Index p, Index sl, Index sr) {
-        auto v = cp(pv);
-        if (sr-sl == 1) {
-            tr[v].val = p;
-            return v;
-        }
-        x < sm ? cl = update1(cl,x,p,sl,sm) : cr = update1(cr,x,p,sm,sr);
-        return v;
-    }
-    Ptr update(Ptr pv, Index x, Index p) { return update(pv,x,p,0,n); }
-    Ptr query(Ptr v, Index x) { return query(v,x,0,n); }
-    void add(Ptr v, Index x) { add(v,x,0,n); }
-    // find root pa[x]=x, still return v not pa.
+    // find root pa[v]=x, still return v not pa.
     Ptr find(Ptr _, Index x) {
-        auto v = query(_,x);
-        return pa == x ? v : find(_,pa);
+        auto v = find_ptr(_,x);
+        while (pa[v] != x) v = find_ptr(_,x = pa[v]);
+        return v;
+        //return pa[v] == x ? v : find(_,pa[v]);
     }
     Ptr join(Ptr _, Index x, Index y) {
         x = find(_,x);
         y = find(_,y);
-        if (tr[x].p == tr[y].p) return _;
-        if (tr[x].r < tr[y].r) swap(x,y);
-        auto v = update(_,tr[y].p,tr[x].p);
-        //tr[x].val = min(tr[x].val, tr[y].val); // need update-style
-        if (tr[x].val > tr[y].val)
-            v = update1(v, tr[x].p, tr[y].val, 0,n);
-        if (tr[x].r == tr[y].r) ++tr[x].r;//add(v,tr[x].p); // same
+        if (pa[x] == pa[y]) return _;
+        if (rk[x] < rk[y]) swap(x,y);
+        auto v = update(_,pa[y],pa[x]); y = vc-1;
+        // can possibly omit if no merge, save half-space
+        // although ++rk[x] might affect past, but most cases no big deal.
+        v = update(v,pa[x],pa[x]); x = vc-1;
+        if (rk[x] == rk[y]) ++rk[x];
+        // merge here
+        a[x] = min(a[x], a[y]);
         return v;
     }
     bool check(Ptr _, Index x, Index y) {
         x = find(_,x);
         y = find(_,y);
-        return tr[x].p == tr[y].p;
+        return pa[x] == pa[y];
     }
     int ans(Ptr _, Index x) {
         x = find(_,x);
-        //cerr<<"pa:"<<tr[x].p<<endl;
-        return tr[x].val;
+        return a[x];
     }
-    void view() {
-        dbg("!");
-        for (int i = 1; i < vc; i++) {
-            dbg(tr[i].p, tr[i].val);
-        }
-    }
-#undef sm
-#undef cl
-#undef cr
-#undef pa
-#undef rk
 };
 struct State {
     int d,x;
@@ -151,16 +97,34 @@ struct State {
         return d > _oth.d;
     }
 };
-// max 76/100, 4/16 TLE
+// test io
+#define UI unsigned int
+#define RG register
+#define I inline
+#define R RG UI
+#define G c=getchar()
+I UI in(){
+	RG char G;
+	while(c<'-')G;
+	R x=c&15;G;
+	while(c>'-')x*=10,x+=c&15,G;
+	return x;
+}
+// recur-dsu: max 76/100, 4/16 TLE
+// iter-dsu: 88/100, 2/16 TLE
+// iter-dsu + fast io: 100/100 AC.
+// iter-dsu-merge: 64/100, 6/16 TLE. more space, more time? maybe some impl problem
 void solve() {
     int n,m;
-    cin >> n >> m;
+    //cin >> n >> m;
+    n=in();m=in();
     vector<tuple<int,int,int>> es(m);
     vector<vector<pair<int,int>>> g(n);
     vector<int> Hs(m);
     for (int i = 0; i < m; i++) {
         int x,y,z,h;
-        cin >> x >> y >> z >> h;
+        //cin >> x >> y >> z >> h;
+        x=in(),y=in(),z=in(),h=in();
         --x;--y;
         es[i] = {x,y,h};
         g[x].emplace_back(y, z);
@@ -193,7 +157,7 @@ void solve() {
     for (auto [x,y,h]:es) {
         evs[pos(h)].emplace_back(x, y);
     }
-    PersistentDsu dsu(n,m, &d[0]);
+    PersistentDsu dsu(n,&d[0]);
     vector<int> roots(sz + 1);
     roots[sz] = 1;
     //dsu.view();
@@ -208,23 +172,26 @@ void solve() {
 
     int las = 0;
     int q, K, S;
-    cin >> q >> K >> S;
+    //cin >> q >> K >> S;
+    q=in(),K=in(),S=in();
     while (q--) {
         int x, h;
-        cin >> x >> h;
+        //cin >> x >> h;
+        x=in(),h=in();
         x = (0ll+x + K*las - 1) % n;
         h = (0ll+h + K*las) % (S+1);
         h = pos(h+1);
         //cerr<<":"<<h<<endl;
         las = dsu.ans(roots[h], x);
-        cout << las << "\n";
+        //cout << las << "\n";
+        printf("%d\n", las);
     }
 }
 
 int main() {
     ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    int T; cin >> T;
+    //cin.tie(NULL);
+    int T; T=in();//cin >> T;
     for (int t = 0; t < T; t++) {
         solve();
     }

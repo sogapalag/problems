@@ -148,7 +148,7 @@ struct State {
 // each edge of mst, c-to a node
 // i.e. n leaves + (n-1) inner-nodes
 // properties:
-//   any vert-chain, weight monotonic
+//   any vert-chain, weight monotonic. i.e. tree is binary-heap
 //   max w(x,y) = w[lca]
 //   compo of x with some weight-limit, are all leaves of subtree[u], where u is the min-pa_up fit limit
 void solve() {
