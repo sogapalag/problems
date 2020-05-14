@@ -146,7 +146,6 @@ T bs_last(T l, T r, function<bool (T)> f) {
 }
 using ll=long long;
 // SA + manacher, kind of overkill
-// there is a easy method by palindrome tree. TODO
 void solve() {
     string s; cin >> s;
     int n = s.size();
